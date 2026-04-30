@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FATE_95 - Choix</title>
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+
+<div class="card">
+
+    <h1>👤 Qui es-tu ?</h1>
+
+    <p>Choisis ton profil pour commencer l’aventure</p>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <button class="btn" type="submit" name="gender" value="male">
+            👦 Garçon
+        </button>
+
+        <br><br>
+
+        <button class="btn" type="submit" name="gender" value="female">
+            👧 Fille
+        </button>
+
+    </form>
+
+</div>
+
+</body>
+</html>

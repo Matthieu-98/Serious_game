@@ -1,0 +1,19 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FATE_95 - Couleur choisie</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+
+<div class="card">
+    <h1>{{ data.title }}</h1>
+    <p>{{ data.description }}</p>
+
+    <a href="/game/" class="btn">Commencer la mission 🎮</a>
+</div>
+
+</body>
+</html>

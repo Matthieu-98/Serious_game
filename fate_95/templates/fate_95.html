@@ -1,0 +1,147 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FATE_95 - Questions</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        .game-wrapper {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .question-card {
+            background: rgba(255,255,255,0.12);
+            border-radius: 24px;
+            padding: 32px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+            backdrop-filter: blur(8px);
+        }
+
+        .question-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 14px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 999px;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: rgba(255,255,255,0.85);
+            border-radius: 999px;
+            transition: width 0.3s ease;
+        }
+
+        .question-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 28px;
+            line-height: 1.4;
+        }
+
+        .choices {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .choice-btn {
+            border: none;
+            border-radius: 16px;
+            padding: 18px 20px;
+            text-align: left;
+            font-size: 1rem;
+            cursor: pointer;
+            background: rgba(255,255,255,0.14);
+            color: inherit;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        .choice-btn:hover {
+            transform: translateY(-2px);
+            background: rgba(255,255,255,0.22);
+        }
+
+        .choice-letter {
+            display: inline-block;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 1.1rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            font-size: 1.2rem;
+            padding: 30px;
+        }
+
+        @media (max-width: 700px) {
+            .choices {
+                grid-template-columns: 1fr;
+            }
+
+            .question-text {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+
+<body class="{{ theme.body_class }}">
+    <div class="game-wrapper">
+        <div class="question-card">
+            {% if question %}
+                <div class="question-meta">
+                    <p>Question {{ current_index }} / {{ total_questions }}</p>
+                    <p>{{ theme.name }}</p>
+                </div>
+
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: {{ progress }}%;"></div>
+                </div>
+
+                <div class="question-text">
+                    {{ question.text }}
+                </div>
+
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="choices">
+                        <button type="submit" class="choice-btn" name="choice" value="A">
+                            <span class="choice-letter">A.</span> {{ question.option_a }}
+                        </button>
+
+                        <button type="submit" class="choice-btn" name="choice" value="B">
+                            <span class="choice-letter">B.</span> {{ question.option_b }}
+                        </button>
+
+                        <button type="submit" class="choice-btn" name="choice" value="C">
+                            <span class="choice-letter">C.</span> {{ question.option_c }}
+                        </button>
+
+                        <button type="submit" class="choice-btn" name="choice" value="D">
+                            <span class="choice-letter">D.</span> {{ question.option_d }}
+                        </button>
+                    </div>
+                </form>
+            {% else %}
+                <div class="empty-state">
+                    {{ message }}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

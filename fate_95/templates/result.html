@@ -1,0 +1,278 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FATE_95 - Résultat</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        .result-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .result-card {
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 22px;
+            padding: 35px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+            backdrop-filter: blur(8px);
+        }
+
+        .welcome-text {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            opacity: 0.95;
+        }
+
+        .main-title {
+            font-size: 2.4rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            opacity: 0.95;
+        }
+
+        .dominant-box {
+            background: rgba(255,255,255,0.18);
+            border-radius: 18px;
+            padding: 20px;
+            margin: 25px 0 30px 0;
+        }
+
+        .dominant-label {
+            font-size: 1rem;
+            margin-bottom: 8px;
+            opacity: 0.9;
+        }
+
+        .dominant-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .dominant-description {
+            margin-top: 12px;
+            font-size: 1rem;
+            opacity: 0.95;
+        }
+
+        .jobs-box {
+            margin-top: 18px;
+        }
+
+        .jobs-box h3 {
+            margin-bottom: 10px;
+        }
+
+        .jobs-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .jobs-box li {
+            margin-bottom: 6px;
+        }
+
+        .scores-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 18px;
+            margin-top: 25px;
+        }
+
+        .score-box {
+            background: rgba(255,255,255,0.14);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: left;
+        }
+
+        .score-title {
+            font-size: 1rem;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .score-value {
+            font-size: 1.6rem;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .score-bar {
+            width: 100%;
+            height: 12px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .score-fill {
+            height: 100%;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.85);
+        }
+
+        .actions {
+            margin-top: 35px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn-secondary {
+            display: inline-block;
+            background: rgba(255,255,255,0.18);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: 0.2s ease;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.28);
+            transform: scale(1.03);
+        }
+
+        @media (max-width: 600px) {
+            .main-title {
+                font-size: 1.9rem;
+            }
+
+            .dominant-value {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+
+<body class="{{ theme.body_class|default:'' }}">
+
+<div class="result-container">
+    <div class="result-card">
+
+        <p class="welcome-text">
+            Bravo{% if firstname %} {{ firstname }}{% endif %} 👏
+        </p>
+
+        <h1 class="main-title">Ton profil RIASEC 🎯</h1>
+        <p class="subtitle">
+            Voici le résultat de ton aventure dans <strong>FATE_95</strong>.
+        </p>
+
+        {% if dominant %}
+        <div class="dominant-box">
+            <p class="dominant-label">Ton profil dominant est :</p>
+
+            <div class="dominant-value">
+                {% if dominant == "R" %}🔧 Réaliste (R){% endif %}
+                {% if dominant == "I" %}🔬 Investigateur (I){% endif %}
+                {% if dominant == "A" %}🎨 Artistique (A){% endif %}
+                {% if dominant == "S" %}🤝 Social (S){% endif %}
+                {% if dominant == "E" %}💼 Entreprenant (E){% endif %}
+                {% if dominant == "C" %}📊 Conventionnel (C){% endif %}
+            </div>
+
+            {% if descriptions %}
+                {% if dominant == "R" %}<p class="dominant-description">{{ descriptions.R }}</p>{% endif %}
+                {% if dominant == "I" %}<p class="dominant-description">{{ descriptions.I }}</p>{% endif %}
+                {% if dominant == "A" %}<p class="dominant-description">{{ descriptions.A }}</p>{% endif %}
+                {% if dominant == "S" %}<p class="dominant-description">{{ descriptions.S }}</p>{% endif %}
+                {% if dominant == "E" %}<p class="dominant-description">{{ descriptions.E }}</p>{% endif %}
+                {% if dominant == "C" %}<p class="dominant-description">{{ descriptions.C }}</p>{% endif %}
+            {% endif %}
+
+            {% if jobs %}
+            <div class="jobs-box">
+                <h3>Métiers recommandés</h3>
+                <ul>
+                    {% if dominant == "R" %}
+                        {% for job in jobs.R %}<li>{{ job }}</li>{% endfor %}
+                    {% endif %}
+                    {% if dominant == "I" %}
+                        {% for job in jobs.I %}<li>{{ job }}</li>{% endfor %}
+                    {% endif %}
+                    {% if dominant == "A" %}
+                        {% for job in jobs.A %}<li>{{ job }}</li>{% endfor %}
+                    {% endif %}
+                    {% if dominant == "S" %}
+                        {% for job in jobs.S %}<li>{{ job }}</li>{% endfor %}
+                    {% endif %}
+                    {% if dominant == "E" %}
+                        {% for job in jobs.E %}<li>{{ job }}</li>{% endfor %}
+                    {% endif %}
+                    {% if dominant == "C" %}
+                        {% for job in jobs.C %}<li>{{ job }}</li>{% endfor %}
+                    {% endif %}
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <div class="scores-grid">
+            <div class="score-box">
+                <div class="score-title">🔧 Réaliste (R)</div>
+                <div class="score-value">{{ scores.R }}</div>
+                <div class="score-bar">
+                    <div class="score-fill" style="width: {% widthratio scores.R 5 100 %}%;"></div>
+                </div>
+            </div>
+
+            <div class="score-box">
+                <div class="score-title">🔬 Investigateur (I)</div>
+                <div class="score-value">{{ scores.I }}</div>
+                <div class="score-bar">
+                    <div class="score-fill" style="width: {% widthratio scores.I 5 100 %}%;"></div>
+                </div>
+            </div>
+
+            <div class="score-box">
+                <div class="score-title">🎨 Artistique (A)</div>
+                <div class="score-value">{{ scores.A }}</div>
+                <div class="score-bar">
+                    <div class="score-fill" style="width: {% widthratio scores.A 5 100 %}%;"></div>
+                </div>
+            </div>
+
+            <div class="score-box">
+                <div class="score-title">🤝 Social (S)</div>
+                <div class="score-value">{{ scores.S }}</div>
+                <div class="score-bar">
+                    <div class="score-fill" style="width: {% widthratio scores.S 5 100 %}%;"></div>
+                </div>
+            </div>
+
+            <div class="score-box">
+                <div class="score-title">💼 Entreprenant (E)</div>
+                <div class="score-value">{{ scores.E }}</div>
+                <div class="score-bar">
+                    <div class="score-fill" style="width: {% widthratio scores.E 5 100 %}%;"></div>
+                </div>
+            </div>
+
+            <div class="score-box">
+                <div class="score-title">📊 Conventionnel (C)</div>
+                <div class="score-value">{{ scores.C }}</div>
+                <div class="score-bar">
+                    <div class="score-fill" style="width: {% widthratio scores.C 5 100 %}%;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="actions">
+            <a href="{% url 'reset' %}" class="btn">Rejouer</a>
+            <a href="/" class="btn-secondary">Retour à l’accueil</a>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

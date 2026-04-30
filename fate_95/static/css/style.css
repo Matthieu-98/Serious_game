@@ -1,0 +1,121 @@
+/* 🌌 Style global */
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #1d2671, #c33764);
+    color: white;
+    text-align: center;
+    padding: 50px;
+    margin: 0;
+}
+
+/* 🧱 Carte centrale */
+.card {
+    background: rgba(255,255,255,0.1);
+    padding: 40px;
+    border-radius: 20px;
+    display: inline-block;
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+}
+
+/* 🎮 Titre */
+h1 {
+    font-size: 3em;
+    margin-bottom: 10px;
+}
+
+/* 📝 Texte */
+p {
+    font-size: 1.2em;
+    margin-bottom: 20px;
+}
+
+/* 🚀 Bouton */
+.btn {
+    background: white;
+    color: #333;
+    padding: 15px 30px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 18px;
+    transition: 0.3s;
+    display: inline-block;
+}
+
+.btn:hover {
+    background: #333;
+    color: white;
+    transform: scale(1.1);
+}
+
+/* 📦 Section infos */
+.info {
+    margin-top: 40px;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    color: white;
+    text-align: center;
+    padding: 50px;
+    margin: 0;
+    min-height: 100vh;
+    transition: background 0.5s ease;
+}
+
+.card {
+    background: rgba(255,255,255,0.12);
+    padding: 40px;
+    border-radius: 20px;
+    display: inline-block;
+    box-shadow: 0 0 20px rgba(0,0,0,0.25);
+    backdrop-filter: blur(6px);
+}
+
+.btn {
+    background: white;
+    color: #333;
+    padding: 12px 24px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease;
+    margin: 6px;
+}
+
+.btn:hover {
+    transform: scale(1.05);
+}
+
+/* FEU */
+.theme-feu {
+    background: linear-gradient(135deg, #7a1c00, #ff6b35, #ffb347);
+}
+
+/* EAU */
+.theme-eau {
+    background: linear-gradient(135deg, #003c8f, #1e90ff, #87cefa);
+}
+
+/* VENT */
+.theme-vent {
+    background: linear-gradient(135deg, #6b7280, #9aa5b1, #dfe7ef);
+    color: #1f2937;
+}
+
+/* TERRE */
+.theme-terre {
+    background: linear-gradient(135deg, #1b5e20, #4caf50, #a5d6a7);
+}
+
+/* OMBRE */
+.theme-ombre {
+    background: linear-gradient(135deg, #111111, #2f2f2f, #5c5c5c);
+}
+
+/* LUMIÈRE */
+.theme-lumiere {
+    background: linear-gradient(135deg, #f4c430, #ffd54f, #fff8dc);
+    color: #333;
+}

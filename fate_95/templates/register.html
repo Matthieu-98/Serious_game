@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FATE_95 - Inscription</title>
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <style>
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        input, select {
+            padding: 12px;
+            width: 80%;
+            border-radius: 10px;
+            border: none;
+            outline: none;
+            font-size: 16px;
+        }
+
+        select {
+            cursor: pointer;
+        }
+
+        .btn {
+            margin-top: 20px;
+            width: 85%;
+        }
+
+        .title {
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1em;
+            opacity: 0.8;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="card">
+
+    <h1 class="title">📝 FATE_95</h1>
+    <p class="subtitle">Crée ton profil pour commencer l'aventure</p>
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <div class="form-group">
+            <input type="text" name="firstname" placeholder="👤 Ton prénom" required>
+        </div>
+
+        <div class="form-group">
+            <select name="school_class" required>
+                <option value="">🎓 Choisis ta classe</option>
+                <option value="6eme">6ème</option>
+                <option value="5eme">5ème</option>
+                <option value="4eme">4ème</option>
+                <option value="3eme">3ème</option>
+                <option value="2nde">2nde</option>
+                <option value="1ere">1ère</option>
+                <option value="terminale">Terminale</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <input type="password" name="password" placeholder="🔒 Mot de passe" required>
+        </div>
+
+        <button class="btn" type="submit">🚀 Lancer le jeu</button>
+
+    </form>
+
+</div>
+
+</body>
+</html>

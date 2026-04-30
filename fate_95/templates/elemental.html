@@ -1,0 +1,281 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quête Élémentaliste</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background: radial-gradient(circle at center, #8c4b7f 0%, #6f4376 35%, #5c3568 100%);
+            overflow: hidden;
+        }
+
+        .element-scene {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+        }
+
+        .center-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #f7e7b8;
+            z-index: 2;
+        }
+
+        .center-text h1 {
+            font-family: Georgia, serif;
+            font-size: 4rem;
+            margin: 0;
+            line-height: 1.05;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.25);
+        }
+
+        .center-text .divider {
+            width: 220px;
+            height: 2px;
+            background: linear-gradient(to right, transparent, #e9d28e, transparent);
+            margin: 24px auto 20px;
+            position: relative;
+        }
+
+        .center-text .divider::before {
+            content: "◇";
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -55%);
+            background: transparent;
+            color: #e9d28e;
+            font-size: 1.2rem;
+            padding: 0 10px;
+        }
+
+        .center-text p {
+            color: #f5f0f8;
+            font-size: 1.1rem;
+            margin: 0;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.25);
+        }
+
+        .ring-lines {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .ring-lines svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .ring-lines line {
+            stroke: #ffd89a;
+            stroke-width: 4;
+            filter: drop-shadow(0 0 8px rgba(255, 216, 154, 0.8));
+            opacity: 0.9;
+        }
+
+        .element-btn {
+            position: absolute;
+            width: 190px;
+            height: 215px;
+            border: none;
+            cursor: pointer;
+            clip-path: polygon(
+                25% 6.7%,
+                75% 6.7%,
+                100% 50%,
+                75% 93.3%,
+                25% 93.3%,
+                0% 50%
+            );
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            text-align: center;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 10px 24px rgba(0,0,0,0.3);
+            z-index: 2;
+            color: white;
+        }
+
+        .element-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .element-btn::before {
+            content: "";
+            position: absolute;
+            inset: 4px;
+            clip-path: inherit;
+            background: rgba(255,255,255,0.08);
+            z-index: -1;
+        }
+
+        .element-icon {
+            font-size: 3rem;
+            margin-bottom: 12px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.25);
+        }
+
+        .element-label {
+            font-size: 1.05rem;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.25);
+        }
+
+        .feu {
+            background: linear-gradient(180deg, #ff6a2f, #b51212);
+            top: 6%;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 0 20px rgba(255, 106, 47, 0.65), 0 10px 24px rgba(0,0,0,0.3);
+        }
+
+        .eau {
+            background: linear-gradient(180deg, #4ab8ff, #1e62d0);
+            top: 28%;
+            right: 12%;
+            box-shadow: 0 0 20px rgba(74, 184, 255, 0.65), 0 10px 24px rgba(0,0,0,0.3);
+        }
+
+        .vent {
+            background: linear-gradient(180deg, #dfe6ec, #a8b6c2);
+            top: 58%;
+            right: 14%;
+            color: #27303a;
+            box-shadow: 0 0 20px rgba(223, 230, 236, 0.55), 0 10px 24px rgba(0,0,0,0.3);
+        }
+
+        .terre {
+            background: linear-gradient(180deg, #85d743, #3f8a1c);
+            bottom: 6%;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 0 20px rgba(133, 215, 67, 0.65), 0 10px 24px rgba(0,0,0,0.3);
+        }
+
+        .ombre {
+            background: linear-gradient(180deg, #4b3a72, #1e2740);
+            top: 58%;
+            left: 14%;
+            box-shadow: 0 0 20px rgba(107, 78, 159, 0.6), 0 10px 24px rgba(0,0,0,0.3);
+        }
+
+        .lumiere {
+            background: linear-gradient(180deg, #ffd94d, #e2a60d);
+            top: 28%;
+            left: 12%;
+            color: #fff8e6;
+            box-shadow: 0 0 20px rgba(255, 217, 77, 0.65), 0 10px 24px rgba(0,0,0,0.3);
+        }
+
+        @media (max-width: 1100px) {
+            .element-btn {
+                width: 160px;
+                height: 182px;
+            }
+
+            .center-text h1 {
+                font-size: 3rem;
+            }
+        }
+
+        @media (max-width: 800px) {
+            body {
+                overflow-y: auto;
+            }
+
+            .element-scene {
+                min-height: 1100px;
+                height: auto;
+                padding: 40px 0;
+            }
+
+            .ring-lines {
+                display: none;
+            }
+
+            .center-text {
+                position: static;
+                transform: none;
+                padding-top: 30px;
+                margin-bottom: 40px;
+            }
+
+            .element-btn {
+                position: static;
+                margin: 14px auto;
+                transform: none !important;
+                display: flex;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <form method="POST" class="element-scene">
+        {% csrf_token %}
+
+        <div class="ring-lines">
+            <svg viewBox="0 0 1000 800" preserveAspectRatio="none">
+                <line x1="500" y1="120" x2="790" y2="250"></line>
+                <line x1="790" y1="250" x2="810" y2="510"></line>
+                <line x1="810" y1="510" x2="500" y2="690"></line>
+                <line x1="500" y1="690" x2="190" y2="510"></line>
+                <line x1="190" y1="510" x2="210" y2="250"></line>
+                <line x1="210" y1="250" x2="500" y2="120"></line>
+            </svg>
+        </div>
+
+        <div class="center-text">
+            <h1>Choisis<br>ton élément</h1>
+            <div class="divider"></div>
+            <p>Quel élément te correspond le plus ?</p>
+        </div>
+
+        <button type="submit" class="element-btn feu" name="element" value="feu">
+            <span class="element-icon">🔥</span>
+            <span class="element-label">Feu</span>
+        </button>
+
+        <button type="submit" class="element-btn eau" name="element" value="eau">
+            <span class="element-icon">💧</span>
+            <span class="element-label">Eau</span>
+        </button>
+
+        <button type="submit" class="element-btn vent" name="element" value="vent">
+            <span class="element-icon">🌪️</span>
+            <span class="element-label">Vent</span>
+        </button>
+
+        <button type="submit" class="element-btn terre" name="element" value="terre">
+            <span class="element-icon">🌱</span>
+            <span class="element-label">Terre</span>
+        </button>
+
+        <button type="submit" class="element-btn ombre" name="element" value="ombre">
+            <span class="element-icon">🌑</span>
+            <span class="element-label">Ombre</span>
+        </button>
+
+        <button type="submit" class="element-btn lumiere" name="element" value="lumiere">
+            <span class="element-icon">💡</span>
+            <span class="element-label">Lumière</span>
+        </button>
+    </form>
+</body>
+</html>
