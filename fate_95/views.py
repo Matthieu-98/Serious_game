@@ -44,6 +44,9 @@ ELEMENT_THEMES = {
     },
 }
 
+def mini_game(request):
+    return render(request, "minigame.html")
+
 def get_element_theme(request):
     element = request.session.get("element", "lumiere")
     return ELEMENT_THEMES.get(element, ELEMENT_THEMES["lumiere"])

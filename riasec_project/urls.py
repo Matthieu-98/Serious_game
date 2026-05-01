@@ -11,7 +11,8 @@ from fate_95.views import (
     element_intro_view,
     reset_game,
     painter_view, 
-    painter_intro_view
+    painter_intro_view,
+    mini_game
 )
 
 urlpatterns = [
@@ -27,4 +28,5 @@ urlpatterns = [
     path("reset/", reset_game, name="reset"),
     path("painter/", painter_view, name="painter"),
     path("painter_intro/", painter_intro_view, name="painter_intro"),
+    path('minigame/', mini_game, name='minigame'),
 ]

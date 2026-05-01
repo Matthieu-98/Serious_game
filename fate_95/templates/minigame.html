@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Mini Runner</title>
+
+<style>
+    body {
+        margin: 0;
+        text-align: center;
+        font-family: Arial;
+        background: #111;
+        color: white;
+    }
+
+    canvas {
+        background: #222;
+        margin-top: 20px;
+        border-radius: 10px;
+    }
+
+    #gameOver {
+        display: none;
+        margin-top: 20px;
+    }
+
+    button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 8px;
+        background: #00c896;
+        color: white;
+        cursor: pointer;
+        font-size: 16px;
+        margin-top: 10px;
+    }
+</style>
+</head>
+
+<body>
+
+<h1>🏃 Mini Runner</h1>
+<p>Appuie sur ESPACE ou clique pour sauter</p>
+
+<canvas id="gameCanvas" width="600" height="300"></canvas>
+
+<div id="gameOver">
+    <h2>Game Over</h2>
+    <p id="finalScore"></p>
+
+    <p>Ta manière de réagir face aux obstacles en dit long sur toi…</p>
+
+    <button onclick="restartGame()">🔁 Rejouer</button>
+    <button onclick="window.location.href='/'">🏠 Accueil</button>
+    <button onclick="window.location.href='/chatbot'">
+        Découvrir le chatbot
+    </button>
+    <button onclick="window.location.href='/gender/'">
+        🧠 Découvrir mon profil RIASEC
+    </button>
+</div>
+
+<script>
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+
+let player, obstacles, score, gameRunning, lives;
+let speed, spawnRate;
+
+function init() {
+    player = {
+        x: 50,
+        y: 200,
+        w: 30,
+        h: 30,
+        vy: 0,
+        gravity: 0.7,
+        jump: -12,
+        frame: 0,
+        runAnim: 0
+    };
+
+    obstacles = [];
+    score = 0;
+    lives = 3;
+
+    speed = 3;
+    spawnRate = 0.02;
+
+    gameRunning = true;
+
+    document.getElementById("gameOver").style.display = "none";
+
+    loop();
+}
+
+function spawnObstacle() {
+    obstacles.push({
+        x: canvas.width,
+        y: 210,
+        w: 25,
+        h: 40
+    });
+}
+
+function update() {
+    if (!gameRunning) return;
+
+    // 🧍 joueur
+    player.vy += player.gravity;
+    player.y += player.vy;
+
+    if (player.y > 200) {
+        player.y = 200;
+        player.vy = 0;
+    }
+
+    // ⭐ animation course
+    player.frame++;
+    player.runAnim = Math.sin(player.frame * 0.25) * 4;
+
+    // ⭐ difficulté progressive
+    if (score % 400 === 0 && score > 0) {
+        speed += 0.2;
+        spawnRate += 0.002;
+        if (spawnRate > 0.05) spawnRate = 0.05;
+    }
+
+    // 🚧 obstacles
+    for (let i = 0; i < obstacles.length; i++) {
+        let o = obstacles[i];
+        o.x -= speed;
+
+        // collision fiable
+        if (
+            player.x < o.x + o.w &&
+            player.x + player.w > o.x &&
+            player.y < o.y + o.h &&
+            player.y + player.h > o.y
+        ) {
+            obstacles.splice(i, 1);
+            i--;
+
+            lives--;
+
+            if (lives <= 0) {
+                endGame();
+            }
+        }
+    }
+
+    obstacles = obstacles.filter(o => o.x > -50);
+
+    if (Math.random() < spawnRate) {
+        spawnObstacle();
+    }
+
+    score++;
+}
+
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // sol
+    ctx.fillStyle = "#555";
+    ctx.fillRect(0, 240, canvas.width, 5);
+
+    drawPlayer();
+
+    // obstacles
+    ctx.fillStyle = "#ff4757";
+    for (let o of obstacles) {
+        ctx.fillRect(o.x, o.y, o.w, o.h);
+    }
+
+    // UI
+    ctx.fillStyle = "white";
+    ctx.font = "16px Arial";
+    ctx.fillText("Score: " + score, 10, 20);
+    ctx.fillText("Vies: " + lives, 500, 20);
+}
+
+function drawPlayer() {
+    ctx.fillStyle = "#00c896";
+
+    // corps
+    ctx.fillRect(player.x, player.y, player.w, player.h);
+
+    // jambes animées (effet course réel)
+    let legOffset = player.runAnim;
+
+    ctx.fillRect(player.x - 5, player.y + 20, 5, 10 + legOffset);
+    ctx.fillRect(player.x + 30, player.y + 20, 5, 10 - legOffset);
+}
+
+function loop() {
+    update();
+    draw();
+    if (gameRunning) requestAnimationFrame(loop);
+}
+
+function jump() {
+    if (player.y >= 200) {
+        player.vy = player.jump;
+    }
+}
+
+function endGame() {
+    gameRunning = false;
+    document.getElementById("gameOver").style.display = "block";
+    document.getElementById("finalScore").innerText =
+        "Score : " + score;
+}
+
+function restartGame() {
+    init();
+}
+
+// controls
+document.addEventListener("keydown", e => {
+    if (e.code === "Space") jump();
+});
+
+document.addEventListener("click", jump);
+
+// start
+init();
+</script>
+
+</body>
+</html>
