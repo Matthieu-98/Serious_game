@@ -1,0 +1,44 @@
+# 🐍 Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environnements virtuels
+venv/
+.venv/
+
+# Fichiers de build / packaging
+build/
+dist/
+*.egg-info/
+
+# Base de données locale
+db.sqlite3
+*.sqlite3
+
+# Fichiers sensibles
+.env
+.env.*
+
+# Logs
+*.log
+
+# Fichiers temporaires OS
+.DS_Store
+Thumbs.db
+
+# Cache Django / outils
+*.pot
+*.mo
+
+# Static files (si générés)
+staticfiles/
+
+# Coverage / tests
+.coverage
+htmlcov/
+.pytest_cache/
+
+# IDE / éditeurs
+.vscode/
+.idea/
