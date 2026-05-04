@@ -44,7 +44,41 @@ ELEMENT_THEMES = {
     },
 }
 
+COLOR_THEMES = {
+    "bleu": {
+        "name": "Bleu",
+        "body_class": "theme-bleu",
+        "title": "🔵 Monde Bleu",
+    },
+    "jaune": {
+        "name": "Jaune",
+        "body_class": "theme-jaune",
+        "title": "🟡 Monde Jaune",
+    },
+    "rouge": {
+        "name": "Rouge",
+        "body_class": "theme-rouge",
+        "title": "🔴 Monde Rouge",
+    },
+    "noir": {
+        "name": "Noir",
+        "body_class": "theme-noir",
+        "title": "⚫ Monde Noir",
+    },
+    "blanc": {
+        "name": "Blanc",
+        "body_class": "theme-blanc",
+        "title": "⚪ Monde Blanc",
+    },
+}
+
 def get_element_theme(request):
+    quest = request.session.get("quest")
+
+    if quest == "painter":
+        color = request.session.get("color", "bleu")
+        return COLOR_THEMES.get(color, COLOR_THEMES["bleu"])
+
     element = request.session.get("element", "lumiere")
     return ELEMENT_THEMES.get(element, ELEMENT_THEMES["lumiere"])
 

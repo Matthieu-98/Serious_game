@@ -90,32 +90,61 @@ body {
 
 /* FEU */
 .theme-feu {
-    background: linear-gradient(135deg, #7a1c00, #ff6b35, #ffb347);
+    background: url('/static/images/backgrounds/feu.png') no-repeat center;
+    background-size: cover; 
 }
 
 /* EAU */
 .theme-eau {
-    background: linear-gradient(135deg, #003c8f, #1e90ff, #87cefa);
+    background: url('/static/images/backgrounds/eau.png') no-repeat center;
+    background-size: cover;
 }
 
 /* VENT */
 .theme-vent {
-    background: linear-gradient(135deg, #6b7280, #9aa5b1, #dfe7ef);
-    color: #1f2937;
+    background: url('/static/images/backgrounds/vent.png') no-repeat center;
+    background-size: cover;
 }
 
 /* TERRE */
 .theme-terre {
-    background: linear-gradient(135deg, #1b5e20, #4caf50, #a5d6a7);
+    background: url('/static/images/backgrounds/terre.png') no-repeat center;
+    background-size: cover;
 }
 
 /* OMBRE */
 .theme-ombre {
-    background: linear-gradient(135deg, #111111, #2f2f2f, #5c5c5c);
+    background: url('/static/images/backgrounds/ombre.png') no-repeat center;
+    background-size: cover;
 }
 
 /* LUMIÈRE */
 .theme-lumiere {
-    background: linear-gradient(135deg, #f4c430, #ffd54f, #fff8dc);
-    color: #333;
+    background: url('/static/images/backgrounds/lumiere.png') no-repeat center;
+    background-size: cover;
+}
+
+.theme-bleu {
+    background: linear-gradient(135deg, #0d47a1, #1e88e5, #90caf9);
+    color: white;
+}
+
+.theme-jaune {
+    background: linear-gradient(135deg, #f9a825, #ffd54f, #fff59d);
+    color: #2d2300;
+}
+
+.theme-rouge {
+    background: linear-gradient(135deg, #7f0000, #d32f2f, #ff8a80);
+    color: white;
+}
+
+.theme-noir {
+    background: linear-gradient(135deg, #000000, #212121, #616161);
+    color: white;
+}
+
+.theme-blanc {
+    background: linear-gradient(135deg, #ffffff, #eeeeee, #cfcfcf);
+    color: #222;
 }
