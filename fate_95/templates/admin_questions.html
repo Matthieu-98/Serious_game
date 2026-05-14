@@ -1,0 +1,293 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Questions RIASEC — FATE_95</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        * { box-sizing: border-box; }
+        body { background: #0f0f1a; color: #e0e0e0; font-family: sans-serif; margin: 0; }
+
+        /* ── Nav ── */
+        .topbar { background: rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.08); padding: 14px 32px; display: flex; align-items: center; justify-content: space-between; }
+        .topbar-left { display: flex; align-items: center; gap: 24px; }
+        .brand { font-weight: bold; font-size: 1rem; }
+        .nav-links { display: flex; gap: 4px; }
+        .nav-link { padding: 6px 14px; border-radius: 8px; color: #ccc; text-decoration: none; font-size: 0.88rem; transition: 0.15s; }
+        .nav-link:hover { background: rgba(255,255,255,0.1); color: #fff; }
+        .nav-link.active { background: rgba(255,255,255,0.15); color: #fff; font-weight: 600; }
+        .topbar-right { display: flex; align-items: center; gap: 16px; }
+        .logout-btn { background: none; border: none; color: #e0e0e0; cursor: pointer; font-size: 0.85rem; opacity: 0.6; text-decoration: underline; }
+
+        /* ── Layout ── */
+        .page { display: grid; grid-template-columns: 320px 1fr; gap: 24px; max-width: 1140px; margin: 28px auto; padding: 0 24px; align-items: start; }
+
+        .card { background: rgba(255,255,255,0.06); border-radius: 16px; padding: 22px 24px; }
+        h2 { font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.07em; color: #888; margin: 0 0 16px; font-weight: 600; }
+
+        .flash { background: rgba(80,200,120,0.15); border: 1px solid rgba(80,200,120,0.3); border-radius: 8px; padding: 10px 14px; margin-bottom: 16px; font-size: 0.88rem; grid-column: 1/-1; }
+
+        /* ── Form controls ── */
+        label { display: block; font-size: 0.78rem; opacity: 0.55; margin-bottom: 4px; }
+
+        input[type="text"], textarea, select {
+            width: 100%; padding: 8px 11px; border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.07); color: #fff;
+            font-size: 0.88rem; font-family: inherit;
+            transition: border 0.15s;
+        }
+        input[type="text"]:focus, textarea:focus, select:focus {
+            outline: none; border-color: rgba(255,255,255,0.32);
+        }
+        textarea { resize: vertical; }
+
+        select option { background: #1a1a2e; }
+
+        .field { margin-bottom: 12px; }
+
+        /* ── Option row: letter | input | type-badge ── */
+        .opt-row {
+            display: grid;
+            grid-template-columns: 22px 1fr 72px;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .opt-letter {
+            font-size: 0.82rem; font-weight: bold; opacity: 0.5;
+            text-align: center; padding-top: 2px;
+        }
+        .opt-row input[type="text"] { margin: 0; }
+        .type-sel {
+            width: 100% !important;
+            padding: 8px 6px !important;
+            text-align: center;
+            font-weight: bold;
+            font-size: 0.85rem !important;
+        }
+
+        /* ── Buttons ── */
+        .btn { padding: 8px 16px; border-radius: 8px; border: none; background: rgba(255,255,255,0.14); color: #fff; font-size: 0.85rem; cursor: pointer; transition: background 0.15s; }
+        .btn:hover { background: rgba(255,255,255,0.24); }
+        .btn-primary { background: rgba(100,160,255,0.25); }
+        .btn-primary:hover { background: rgba(100,160,255,0.4); }
+        .btn-danger { background: rgba(200,60,60,0.28); }
+        .btn-danger:hover { background: rgba(200,60,60,0.48); }
+        .btn-ghost { background: transparent; opacity: 0.5; }
+        .btn-ghost:hover { background: rgba(255,255,255,0.1); opacity: 1; }
+        .btn-sm { padding: 5px 11px; font-size: 0.78rem; }
+        .btn-row { display: flex; gap: 8px; margin-top: 14px; }
+
+        /* ── Filter chips ── */
+        .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 18px; }
+        .chip { padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; text-decoration: none; color: #bbb; background: rgba(255,255,255,0.07); transition: 0.15s; }
+        .chip:hover, .chip.on { background: rgba(255,255,255,0.2); color: #fff; }
+
+        /* ── Question cards ── */
+        .q-list { display: flex; flex-direction: column; gap: 10px; }
+
+        .q-card {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: border 0.15s;
+        }
+        .q-card:hover { border-color: rgba(255,255,255,0.14); }
+
+        /* Read mode */
+        .q-read { padding: 14px 16px; }
+        .q-top { display: flex; align-items: flex-start; gap: 10px; }
+        .q-text { flex: 1; font-size: 0.9rem; line-height: 1.55; }
+        .elem-pill {
+            font-size: 0.72rem; padding: 2px 9px; border-radius: 10px;
+            background: rgba(255,255,255,0.1); white-space: nowrap; flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .q-actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+        .q-opts-grid {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 5px 16px; margin-top: 12px;
+        }
+        .q-opt-row { display: flex; align-items: center; gap: 7px; font-size: 0.82rem; }
+        .type-badge {
+            font-size: 0.7rem; font-weight: bold; padding: 1px 6px;
+            border-radius: 5px; flex-shrink: 0;
+        }
+        .t-R { background: rgba(239,83,80,0.3);  color: #ff9090; }
+        .t-I { background: rgba(66,165,245,0.3); color: #90c8ff; }
+        .t-A { background: rgba(174,213,129,0.3);color: #b8e890; }
+        .t-S { background: rgba(255,213,79,0.3); color: #ffe090; }
+        .t-E { background: rgba(255,138,101,0.3);color: #ffb080; }
+        .t-C { background: rgba(149,117,205,0.3);color: #c8a8ff; }
+        .opt-label { opacity: 0.45; }
+        .opt-text { opacity: 0.85; }
+
+        /* Edit mode */
+        .q-edit {
+            display: none;
+            padding: 16px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            background: rgba(0,0,0,0.2);
+        }
+        .q-edit.open { display: block; }
+        .edit-section-label {
+            font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em;
+            opacity: 0.4; margin: 14px 0 8px;
+        }
+        .edit-section-label:first-child { margin-top: 0; }
+
+        .empty { opacity: 0.4; font-size: 0.88rem; padding: 20px 0; text-align: center; }
+    </style>
+</head>
+<body>
+
+{% include 'admin_nav.html' %}
+
+<div class="page">
+
+    {% if message %}<div class="flash">{{ message }}</div>{% endif %}
+
+    <!-- ── Sidebar : ajouter ── -->
+    <div class="card">
+        <h2>Nouvelle question</h2>
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="add">
+
+            <div class="field">
+                <label>Élément / Couleur</label>
+                <select name="element">
+                    {% for val, lbl in element_choices %}
+                    <option value="{{ val }}">{{ lbl }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="field">
+                <label>Question</label>
+                <textarea name="text" rows="3" placeholder="Qu'est-ce qui te correspond le mieux ?"></textarea>
+            </div>
+
+            <div class="edit-section-label">Réponses</div>
+            {% for x, letter in opts_meta %}
+            <div class="opt-row">
+                <span class="opt-letter">{{ letter }}</span>
+                <input type="text" name="option_{{ x }}" placeholder="Option {{ letter }}">
+                <select name="type_{{ x }}" class="type-sel">
+                    {% for t in riasec_types %}<option>{{ t }}</option>{% endfor %}
+                </select>
+            </div>
+            {% endfor %}
+
+            <div class="btn-row">
+                <button type="submit" class="btn btn-primary" style="flex:1;">Ajouter</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- ── Main : liste ── -->
+    <div class="card">
+        <h2>Questions ({{ questions|length }})</h2>
+
+        <div class="chips">
+            <a href="{% url 'admin_questions' %}" class="chip {% if not element_filter %}on{% endif %}">Toutes</a>
+            {% for val, lbl in element_choices %}
+            <a href="?element={{ val }}" class="chip {% if element_filter == val %}on{% endif %}">{{ lbl }}</a>
+            {% endfor %}
+        </div>
+
+        {% if questions %}
+        <div class="q-list">
+            {% for q in questions %}
+            <div class="q-card">
+
+                <!-- Vue lecture -->
+                <div class="q-read">
+                    <div class="q-top">
+                        <div class="q-text">{{ q.text }}</div>
+                        <span class="elem-pill">{{ q.element }}</span>
+                        <div class="q-actions">
+                            <button class="btn btn-sm" onclick="toggleEdit({{ q.id }})">Modifier</button>
+                            <form method="post" style="margin:0;" onsubmit="return confirm('Supprimer cette question ?')">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="delete">
+                                <input type="hidden" name="question_id" value="{{ q.id }}">
+                                <button type="submit" class="btn btn-sm btn-danger">✕</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="q-opts-grid">
+                        {% for letter, opt, typ in q.opts_list %}
+                        <div class="q-opt-row">
+                            <span class="type-badge t-{{ typ }}">{{ typ }}</span>
+                            <span class="opt-label">{{ letter }}.</span>
+                            <span class="opt-text">{{ opt }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Vue édition -->
+                <div class="q-edit" id="edit-{{ q.id }}">
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="edit">
+                        <input type="hidden" name="question_id" value="{{ q.id }}">
+
+                        <div class="field">
+                            <label>Question</label>
+                            <textarea name="text" rows="2">{{ q.text }}</textarea>
+                        </div>
+
+                        <div class="edit-section-label">Réponses</div>
+                        <div class="opt-row">
+                            <span class="opt-letter">A</span>
+                            <input type="text" name="option_a" value="{{ q.option_a }}">
+                            <select name="type_a" class="type-sel">{% for t in riasec_types %}<option {% if q.type_a == t %}selected{% endif %}>{{ t }}</option>{% endfor %}</select>
+                        </div>
+                        <div class="opt-row">
+                            <span class="opt-letter">B</span>
+                            <input type="text" name="option_b" value="{{ q.option_b }}">
+                            <select name="type_b" class="type-sel">{% for t in riasec_types %}<option {% if q.type_b == t %}selected{% endif %}>{{ t }}</option>{% endfor %}</select>
+                        </div>
+                        <div class="opt-row">
+                            <span class="opt-letter">C</span>
+                            <input type="text" name="option_c" value="{{ q.option_c }}">
+                            <select name="type_c" class="type-sel">{% for t in riasec_types %}<option {% if q.type_c == t %}selected{% endif %}>{{ t }}</option>{% endfor %}</select>
+                        </div>
+                        <div class="opt-row">
+                            <span class="opt-letter">D</span>
+                            <input type="text" name="option_d" value="{{ q.option_d }}">
+                            <select name="type_d" class="type-sel">{% for t in riasec_types %}<option {% if q.type_d == t %}selected{% endif %}>{{ t }}</option>{% endfor %}</select>
+                        </div>
+
+                        <div class="btn-row">
+                            <button type="submit" class="btn btn-primary">Enregistrer</button>
+                            <button type="button" class="btn btn-ghost" onclick="toggleEdit({{ q.id }})">Annuler</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty">Aucune question{% if element_filter %} pour « {{ element_filter }} »{% endif %}.</div>
+        {% endif %}
+    </div>
+
+</div>
+
+<script>
+function toggleEdit(id) {
+    const el = document.getElementById('edit-' + id);
+    const isOpen = el.classList.toggle('open');
+    if (isOpen) el.querySelector('textarea').focus();
+}
+</script>
+
+</body>
+</html>

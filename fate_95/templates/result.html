@@ -19,22 +19,9 @@
             backdrop-filter: blur(8px);
         }
 
-        .welcome-text {
-            font-size: 1.1rem;
-            margin-bottom: 10px;
-            opacity: 0.95;
-        }
-
-        .main-title {
-            font-size: 2.4rem;
-            margin-bottom: 10px;
-        }
-
-        .subtitle {
-            font-size: 1.2rem;
-            margin-bottom: 30px;
-            opacity: 0.95;
-        }
+        .welcome-text { font-size: 1.1rem; margin-bottom: 10px; opacity: 0.95; }
+        .main-title { font-size: 2.4rem; margin-bottom: 10px; }
+        .subtitle { font-size: 1.2rem; margin-bottom: 30px; opacity: 0.95; }
 
         .dominant-box {
             background: rgba(255,255,255,0.18);
@@ -43,39 +30,14 @@
             margin: 25px 0 30px 0;
         }
 
-        .dominant-label {
-            font-size: 1rem;
-            margin-bottom: 8px;
-            opacity: 0.9;
-        }
+        .dominant-label { font-size: 1rem; margin-bottom: 8px; opacity: 0.9; }
+        .dominant-value { font-size: 1.8rem; font-weight: bold; }
+        .dominant-description { margin-top: 12px; font-size: 1rem; opacity: 0.95; }
 
-        .dominant-value {
-            font-size: 1.8rem;
-            font-weight: bold;
-        }
-
-        .dominant-description {
-            margin-top: 12px;
-            font-size: 1rem;
-            opacity: 0.95;
-        }
-
-        .jobs-box {
-            margin-top: 18px;
-        }
-
-        .jobs-box h3 {
-            margin-bottom: 10px;
-        }
-
-        .jobs-box ul {
-            margin: 0;
-            padding-left: 20px;
-        }
-
-        .jobs-box li {
-            margin-bottom: 6px;
-        }
+        .jobs-box { margin-top: 18px; }
+        .jobs-box h3 { margin-bottom: 10px; }
+        .jobs-box ul { margin: 0; padding-left: 20px; }
+        .jobs-box li { margin-bottom: 6px; }
 
         .scores-grid {
             display: grid;
@@ -91,17 +53,8 @@
             text-align: left;
         }
 
-        .score-title {
-            font-size: 1rem;
-            margin-bottom: 8px;
-            font-weight: bold;
-        }
-
-        .score-value {
-            font-size: 1.6rem;
-            font-weight: bold;
-            margin-bottom: 12px;
-        }
+        .score-title { font-size: 1rem; margin-bottom: 8px; font-weight: bold; }
+        .score-value { font-size: 1.6rem; font-weight: bold; margin-bottom: 12px; }
 
         .score-bar {
             width: 100%;
@@ -135,19 +88,93 @@
             transition: 0.2s ease;
         }
 
-        .btn-secondary:hover {
-            background: rgba(255,255,255,0.28);
-            transform: scale(1.03);
+        .btn-secondary:hover { background: rgba(255,255,255,0.28); transform: scale(1.03); }
+
+        /* Chatbot */
+        .chatbot-section {
+            margin-top: 40px;
+            background: rgba(0,0,0,0.45);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 20px;
+            padding: 28px;
+            backdrop-filter: blur(10px);
         }
 
-        @media (max-width: 600px) {
-            .main-title {
-                font-size: 1.9rem;
-            }
+        .chatbot-section h2 {
+            font-size: 1.4rem;
+            margin-bottom: 6px;
+        }
 
-            .dominant-value {
-                font-size: 1.4rem;
-            }
+        .chatbot-section p {
+            opacity: 0.85;
+            margin-bottom: 18px;
+            font-size: 0.95rem;
+        }
+
+        .chat-messages {
+            min-height: 80px;
+            max-height: 320px;
+            overflow-y: auto;
+            margin-bottom: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .chat-bubble {
+            padding: 10px 15px;
+            border-radius: 14px;
+            max-width: 85%;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .chat-bubble.user {
+            background: rgba(255,255,255,0.18);
+            align-self: flex-end;
+        }
+
+        .chat-bubble.bot {
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
+            align-self: flex-start;
+        }
+
+        .chat-input-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(0,0,0,0.4);
+            color: white;
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        .chat-input::placeholder { color: rgba(255,255,255,0.6); }
+
+        .chat-send {
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: none;
+            background: rgba(255,255,255,0.3);
+            color: white;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .chat-send:hover { background: rgba(255,255,255,0.45); }
+        .chat-send:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        @media (max-width: 600px) {
+            .main-title { font-size: 1.9rem; }
+            .dominant-value { font-size: 1.4rem; }
         }
     </style>
 </head>
@@ -157,14 +184,9 @@
 <div class="result-container">
     <div class="result-card">
 
-        <p class="welcome-text">
-            Bravo{% if firstname %} {{ firstname }}{% endif %} 👏
-        </p>
-
+        <p class="welcome-text">Bravo{% if firstname %} {{ firstname }}{% endif %} 👏</p>
         <h1 class="main-title">Ton profil RIASEC 🎯</h1>
-        <p class="subtitle">
-            Voici le résultat de ton aventure dans <strong>FATE_95</strong>.
-        </p>
+        <p class="subtitle">Voici le résultat de ton aventure dans <strong>FATE_95</strong>.</p>
 
         {% if dominant %}
         <div class="dominant-box">
@@ -192,24 +214,12 @@
             <div class="jobs-box">
                 <h3>Métiers recommandés</h3>
                 <ul>
-                    {% if dominant == "R" %}
-                        {% for job in jobs.R %}<li>{{ job }}</li>{% endfor %}
-                    {% endif %}
-                    {% if dominant == "I" %}
-                        {% for job in jobs.I %}<li>{{ job }}</li>{% endfor %}
-                    {% endif %}
-                    {% if dominant == "A" %}
-                        {% for job in jobs.A %}<li>{{ job }}</li>{% endfor %}
-                    {% endif %}
-                    {% if dominant == "S" %}
-                        {% for job in jobs.S %}<li>{{ job }}</li>{% endfor %}
-                    {% endif %}
-                    {% if dominant == "E" %}
-                        {% for job in jobs.E %}<li>{{ job }}</li>{% endfor %}
-                    {% endif %}
-                    {% if dominant == "C" %}
-                        {% for job in jobs.C %}<li>{{ job }}</li>{% endfor %}
-                    {% endif %}
+                    {% if dominant == "R" %}{% for job in jobs.R %}<li>{{ job }}</li>{% endfor %}{% endif %}
+                    {% if dominant == "I" %}{% for job in jobs.I %}<li>{{ job }}</li>{% endfor %}{% endif %}
+                    {% if dominant == "A" %}{% for job in jobs.A %}<li>{{ job }}</li>{% endfor %}{% endif %}
+                    {% if dominant == "S" %}{% for job in jobs.S %}<li>{{ job }}</li>{% endfor %}{% endif %}
+                    {% if dominant == "E" %}{% for job in jobs.E %}<li>{{ job }}</li>{% endfor %}{% endif %}
+                    {% if dominant == "C" %}{% for job in jobs.C %}<li>{{ job }}</li>{% endfor %}{% endif %}
                 </ul>
             </div>
             {% endif %}
@@ -220,56 +230,118 @@
             <div class="score-box">
                 <div class="score-title">🔧 Réaliste (R)</div>
                 <div class="score-value">{{ scores.R }}</div>
-                <div class="score-bar">
-                    <div class="score-fill" style="width: {% widthratio scores.R 5 100 %}%;"></div>
-                </div>
+                <div class="score-bar"><div class="score-fill" style="width: {% widthratio scores.R 5 100 %}%;"></div></div>
             </div>
-
             <div class="score-box">
                 <div class="score-title">🔬 Investigateur (I)</div>
                 <div class="score-value">{{ scores.I }}</div>
-                <div class="score-bar">
-                    <div class="score-fill" style="width: {% widthratio scores.I 5 100 %}%;"></div>
-                </div>
+                <div class="score-bar"><div class="score-fill" style="width: {% widthratio scores.I 5 100 %}%;"></div></div>
             </div>
-
             <div class="score-box">
                 <div class="score-title">🎨 Artistique (A)</div>
                 <div class="score-value">{{ scores.A }}</div>
-                <div class="score-bar">
-                    <div class="score-fill" style="width: {% widthratio scores.A 5 100 %}%;"></div>
-                </div>
+                <div class="score-bar"><div class="score-fill" style="width: {% widthratio scores.A 5 100 %}%;"></div></div>
             </div>
-
             <div class="score-box">
                 <div class="score-title">🤝 Social (S)</div>
                 <div class="score-value">{{ scores.S }}</div>
-                <div class="score-bar">
-                    <div class="score-fill" style="width: {% widthratio scores.S 5 100 %}%;"></div>
-                </div>
+                <div class="score-bar"><div class="score-fill" style="width: {% widthratio scores.S 5 100 %}%;"></div></div>
             </div>
-
             <div class="score-box">
                 <div class="score-title">💼 Entreprenant (E)</div>
                 <div class="score-value">{{ scores.E }}</div>
-                <div class="score-bar">
-                    <div class="score-fill" style="width: {% widthratio scores.E 5 100 %}%;"></div>
-                </div>
+                <div class="score-bar"><div class="score-fill" style="width: {% widthratio scores.E 5 100 %}%;"></div></div>
             </div>
-
             <div class="score-box">
                 <div class="score-title">📊 Conventionnel (C)</div>
                 <div class="score-value">{{ scores.C }}</div>
-                <div class="score-bar">
-                    <div class="score-fill" style="width: {% widthratio scores.C 5 100 %}%;"></div>
-                </div>
+                <div class="score-bar"><div class="score-fill" style="width: {% widthratio scores.C 5 100 %}%;"></div></div>
             </div>
         </div>
 
         <div class="actions">
             <a href="{% url 'reset' %}" class="btn">Rejouer</a>
-            <a href="/" class="btn-secondary">Retour à l’accueil</a>
+            <a href="/" class="btn-secondary">Retour à l'accueil</a>
         </div>
+
+        <!-- Chatbot -->
+        <div class="chatbot-section">
+            <h2>💬 Parle avec ton conseiller IA</h2>
+            <p>Pose-moi des questions sur ton profil, les métiers, ou comment t'orienter !</p>
+
+            <div class="chat-messages" id="chatMessages">
+                <div class="chat-bubble bot">Bonjour {% if firstname %}{{ firstname }}{% endif %} ! Je connais ton profil RIASEC. Que voudrais-tu savoir sur ton orientation ?</div>
+            </div>
+
+            <div class="chat-input-row">
+                <input
+                    type="text"
+                    class="chat-input"
+                    id="chatInput"
+                    placeholder="Écris ta question..."
+                    maxlength="400"
+                    autocomplete="off"
+                />
+                <button class="chat-send" id="chatSend">Envoyer</button>
+            </div>
+        </div>
+
+        <script>
+        (function() {
+            const input = document.getElementById('chatInput');
+            const sendBtn = document.getElementById('chatSend');
+            const messages = document.getElementById('chatMessages');
+            const csrfToken = '{{ csrf_token }}';
+
+            function addBubble(text, role) {
+                const div = document.createElement('div');
+                div.className = 'chat-bubble ' + role;
+                div.textContent = text;
+                messages.appendChild(div);
+                messages.scrollTop = messages.scrollHeight;
+            }
+
+            async function sendMessage() {
+                const text = input.value.trim();
+                if (!text) return;
+
+                addBubble(text, 'user');
+                input.value = '';
+                sendBtn.disabled = true;
+                input.disabled = true;
+
+                const thinking = document.createElement('div');
+                thinking.className = 'chat-bubble bot';
+                thinking.textContent = '...';
+                messages.appendChild(thinking);
+                messages.scrollTop = messages.scrollHeight;
+
+                try {
+                    const res = await fetch('{% url "chatbot" %}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': csrfToken,
+                        },
+                        body: JSON.stringify({ message: text }),
+                    });
+                    const data = await res.json();
+                    thinking.textContent = data.reply || "Je n'ai pas pu répondre.";
+                } catch (e) {
+                    thinking.textContent = "Erreur de connexion. Réessaie.";
+                } finally {
+                    sendBtn.disabled = false;
+                    input.disabled = false;
+                    input.focus();
+                }
+            }
+
+            sendBtn.addEventListener('click', sendMessage);
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') sendMessage();
+            });
+        })();
+        </script>
 
     </div>
 </div>

@@ -1,0 +1,229 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Session {{ session.code }} — FATE_95</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * { box-sizing: border-box; }
+        body { background: #0f0f1a; color: #e0e0e0; font-family: sans-serif; margin: 0; }
+
+        .topbar {
+            background: rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            padding: 14px 32px;
+            display: flex; align-items: center; gap: 16px;
+        }
+        .topbar a { color: #8ab4f8; text-decoration: none; font-size: 0.88rem; }
+        .topbar h1 { font-size: 1.1rem; margin: 0; }
+
+        .badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; }
+        .badge-open { background: rgba(60,180,100,0.25); color: #7fdf9f; }
+        .badge-closed { background: rgba(180,60,60,0.25); color: #df7f7f; }
+
+        .layout { max-width: 1100px; margin: 28px auto; padding: 0 24px; }
+
+        .charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 28px; }
+
+        .card { background: rgba(255,255,255,0.06); border-radius: 16px; padding: 24px 28px; }
+
+        h2 { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.06em; color: #aaa; margin: 0 0 18px; }
+
+        .canvas-wrap { position: relative; height: 240px; }
+
+        /* Table */
+        table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+        th { text-align: left; padding: 9px 12px; background: rgba(255,255,255,0.07); color: #bbb; font-weight: 600; }
+        td { padding: 9px 12px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        tr:hover td { background: rgba(255,255,255,0.03); }
+
+        .dom-badge { display: inline-block; padding: 2px 10px; border-radius: 10px; font-weight: bold; font-size: 0.83rem; background: rgba(255,255,255,0.13); }
+
+        .stat-pill { display: inline-block; background: rgba(255,255,255,0.1); border-radius: 6px; padding: 2px 8px; font-size: 0.78rem; margin-right: 4px; }
+
+        .empty { opacity: 0.45; font-size: 0.9rem; padding: 20px 0; }
+    </style>
+</head>
+<body>
+
+{% include 'admin_nav.html' %}
+
+<div class="topbar" style="border-top: 1px solid rgba(255,255,255,0.05);">
+    <a href="{% url 'admin_panel' %}" style="color:#8ab4f8; font-size:0.88rem; text-decoration:none;">← Sessions</a>
+    <h1 style="margin:0; font-size:1.1rem;">
+        Session <strong>{{ session.code }}</strong>
+        {% if session.label %}— {{ session.label }}{% endif %}
+        <span class="badge {% if session.is_open %}badge-open{% else %}badge-closed{% endif %}" style="margin-left:8px;">
+            {% if session.is_open %}Ouverte{% else %}Fermée{% endif %}
+        </span>
+    </h1>
+    <span style="opacity:0.45; font-size:0.82rem; margin-left:auto;">{{ n }} participant{% if n > 1 %}s{% endif %}</span>
+</div>
+
+
+<div class="layout">
+
+    {% if n > 0 %}
+    <div class="charts-row">
+
+        <!-- Bar chart : scores moyens -->
+        <div class="card">
+            <h2>Scores moyens par type</h2>
+            <div class="canvas-wrap">
+                <canvas id="barChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Pie chart : profils dominants -->
+        <div class="card">
+            <h2>Répartition des profils dominants</h2>
+            <div class="canvas-wrap">
+                <canvas id="pieChart"></canvas>
+            </div>
+        </div>
+
+    </div>
+    {% endif %}
+
+    <!-- Table des résultats -->
+    <div class="card">
+        <h2>Résultats individuels</h2>
+
+        {% if results %}
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Classe</th>
+                    <th>Quête / Élément</th>
+                    <th>Profil dominant</th>
+                    <th>Scores R·I·A·S·E·C</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in results %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ r.school_class|default:"—" }}</td>
+                    <td>{{ r.quest|default:"—" }} / {{ r.element|default:"—" }}</td>
+                    <td>
+                        <span class="dom-badge">
+                            {% if r.dominant == "R" %}🔧 Réaliste
+                            {% elif r.dominant == "I" %}🔬 Investigateur
+                            {% elif r.dominant == "A" %}🎨 Artistique
+                            {% elif r.dominant == "S" %}🤝 Social
+                            {% elif r.dominant == "E" %}💼 Entreprenant
+                            {% elif r.dominant == "C" %}📊 Conventionnel
+                            {% else %}—{% endif %}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="stat-pill">R {{ r.score_r }}</span>
+                        <span class="stat-pill">I {{ r.score_i }}</span>
+                        <span class="stat-pill">A {{ r.score_a }}</span>
+                        <span class="stat-pill">S {{ r.score_s }}</span>
+                        <span class="stat-pill">E {{ r.score_e }}</span>
+                        <span class="stat-pill">C {{ r.score_c }}</span>
+                    </td>
+                    <td style="opacity:0.55;">{{ r.created_at|date:"d/m H:i" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="empty">Aucun résultat pour cette session. Les données apparaîtront dès que des joueurs termineront le jeu pendant que cette session est ouverte.</p>
+        {% endif %}
+    </div>
+
+</div>
+
+{% if n > 0 %}
+<script>
+const COLORS = {
+    R: 'rgba(239,83,80,0.8)',
+    I: 'rgba(66,165,245,0.8)',
+    A: 'rgba(174,213,129,0.8)',
+    S: 'rgba(255,213,79,0.8)',
+    E: 'rgba(255,138,101,0.8)',
+    C: 'rgba(149,117,205,0.8)',
+};
+
+const labels = ['Réaliste (R)', 'Investigateur (I)', 'Artistique (A)', 'Social (S)', 'Entreprenant (E)', 'Conventionnel (C)'];
+const keys   = ['R', 'I', 'A', 'S', 'E', 'C'];
+
+// Bar chart — scores moyens
+const avgScores = {
+    R: {{ avg_scores.R }},
+    I: {{ avg_scores.I }},
+    A: {{ avg_scores.A }},
+    S: {{ avg_scores.S }},
+    E: {{ avg_scores.E }},
+    C: {{ avg_scores.C }},
+};
+
+new Chart(document.getElementById('barChart'), {
+    type: 'bar',
+    data: {
+        labels,
+        datasets: [{
+            label: 'Score moyen',
+            data: keys.map(k => avgScores[k]),
+            backgroundColor: keys.map(k => COLORS[k]),
+            borderRadius: 6,
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+            x: { ticks: { color: '#aaa', font: { size: 11 } }, grid: { color: 'rgba(255,255,255,0.06)' } },
+            y: { ticks: { color: '#aaa' }, grid: { color: 'rgba(255,255,255,0.06)' }, beginAtZero: true },
+        }
+    }
+});
+
+// Pie chart — profils dominants
+const domCounts = {
+    R: {{ dom_counts.R }},
+    I: {{ dom_counts.I }},
+    A: {{ dom_counts.A }},
+    S: {{ dom_counts.S }},
+    E: {{ dom_counts.E }},
+    C: {{ dom_counts.C }},
+};
+
+const pieData = keys.map(k => domCounts[k]);
+const hasData = pieData.some(v => v > 0);
+
+if (hasData) {
+    new Chart(document.getElementById('pieChart'), {
+        type: 'doughnut',
+        data: {
+            labels,
+            datasets: [{
+                data: pieData,
+                backgroundColor: keys.map(k => COLORS[k]),
+                borderWidth: 2,
+                borderColor: '#0f0f1a',
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'right',
+                    labels: { color: '#ccc', font: { size: 11 }, padding: 12 }
+                }
+            }
+        }
+    });
+}
+</script>
+{% endif %}
+
+</body>
+</html>

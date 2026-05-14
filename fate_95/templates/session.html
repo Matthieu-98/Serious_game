@@ -1,0 +1,181 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FATE_95 - Résultats</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        * { box-sizing: border-box; }
+        body { background: #0f0f1a; color: #e0e0e0; font-family: sans-serif; margin: 0; }
+
+        .wrap { max-width: 860px; margin: 60px auto; padding: 0 24px; }
+
+        .card {
+            background: rgba(255,255,255,0.07);
+            border-radius: 18px;
+            padding: 36px 40px;
+            box-shadow: 0 6px 28px rgba(0,0,0,0.4);
+        }
+
+        h1 { font-size: 1.6rem; margin-bottom: 4px; }
+        .subtitle { opacity: 0.5; font-size: 0.88rem; margin-bottom: 28px; }
+
+        label { display: block; font-size: 0.85rem; opacity: 0.7; margin-bottom: 6px; }
+
+        input[type="text"] {
+            width: 100%; padding: 13px 16px; border-radius: 9px;
+            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.09); color: #fff;
+            font-size: 1.3rem; letter-spacing: 5px; text-align: center;
+            text-transform: uppercase; margin-bottom: 14px;
+        }
+
+        .btn { width: 100%; padding: 12px; border-radius: 9px; border: none;
+            background: rgba(255,255,255,0.18); color: #fff;
+            font-size: 1rem; cursor: pointer; transition: 0.2s; }
+        .btn:hover { background: rgba(255,255,255,0.28); }
+
+        .error { background: rgba(220,60,60,0.2); border: 1px solid rgba(220,60,60,0.35);
+            border-radius: 8px; padding: 10px 14px; margin-bottom: 16px; font-size: 0.9rem; }
+
+        /* Results header */
+        .results-header {
+            display: flex; align-items: center; justify-content: space-between;
+            flex-wrap: wrap; gap: 12px; margin-bottom: 22px;
+        }
+
+        .results-header h1 { margin: 0; font-size: 1.3rem; }
+
+        .badge { display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 0.78rem; font-weight: bold; }
+        .badge-open  { background: rgba(60,180,100,0.25); color: #7fdf9f; }
+        .badge-closed{ background: rgba(180,60,60,0.25);  color: #df7f7f; }
+
+        /* Filtre classe */
+        .filter-bar {
+            display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .filter-bar a {
+            padding: 5px 14px; border-radius: 20px; font-size: 0.82rem;
+            text-decoration: none; color: #e0e0e0;
+            background: rgba(255,255,255,0.08);
+            transition: 0.15s;
+        }
+
+        .filter-bar a:hover, .filter-bar a.active {
+            background: rgba(255,255,255,0.22);
+        }
+
+        /* Table */
+        table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+        th { text-align: left; padding: 10px 12px; background: rgba(255,255,255,0.08); color: #bbb; font-weight: 600; }
+        td { padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+        tr:hover td { background: rgba(255,255,255,0.03); }
+
+        .dom-badge { display: inline-block; padding: 3px 11px; border-radius: 11px; font-weight: bold; font-size: 0.85rem; background: rgba(255,255,255,0.14); }
+
+        .score-pill { display: inline-block; background: rgba(255,255,255,0.09); border-radius: 5px; padding: 1px 7px; font-size: 0.77rem; margin-right: 3px; }
+
+        .empty { opacity: 0.45; font-size: 0.9rem; padding: 16px 0; }
+
+        .logout-link { font-size: 0.8rem; opacity: 0.5; text-decoration: underline; cursor: pointer; color: #e0e0e0; background: none; border: none; padding: 0; }
+    </style>
+</head>
+<body>
+<div class="wrap">
+
+    {% if mode == 'login' %}
+    <div class="card" style="max-width:380px; margin:0 auto;">
+        <h1>🔍 Voir les résultats</h1>
+        <p class="subtitle">Entrez le code fourni par votre conseiller. Aucun mot de passe requis.</p>
+        {% if error %}<div class="error">{{ error }}</div>{% endif %}
+        <form method="post">
+            {% csrf_token %}
+            <label>Code de session</label>
+            <input type="text" name="code" placeholder="XXXXXX" maxlength="20" autofocus autocomplete="off">
+            <button type="submit" class="btn">Accéder</button>
+        </form>
+    </div>
+
+    {% elif mode == 'results' %}
+    <div class="card">
+
+        <div class="results-header">
+            <div>
+                <h1>
+                    📊 Session <strong>{{ session.code }}</strong>
+                    {% if session.label %}<span style="font-weight:normal; opacity:0.7;">— {{ session.label }}</span>{% endif %}
+                </h1>
+                <span style="font-size:0.82rem; opacity:0.5;">{{ results|length }} participant{% if results|length > 1 %}s{% endif %} — données anonymisées</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:10px;">
+                <span class="badge {% if session.is_open %}badge-open{% else %}badge-closed{% endif %}">
+                    {% if session.is_open %}Session ouverte{% else %}Session fermée{% endif %}
+                </span>
+                <form method="post" style="margin:0;">
+                    {% csrf_token %}
+                    <button type="submit" name="code" value="" class="logout-link">Changer de session</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Filtre par classe -->
+        {% if classes %}
+        <div class="filter-bar">
+            <span style="font-size:0.82rem; opacity:0.55;">Classe :</span>
+            <a href="?{% if session %}&{% endif %}" class="{% if not class_filter %}active{% endif %}">Toutes</a>
+            {% for c in classes %}
+            <a href="?classe={{ c }}" class="{% if class_filter == c %}active{% endif %}">{{ c }}</a>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if results %}
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Classe</th>
+                    <th>Profil dominant</th>
+                    <th>Scores R · I · A · S · E · C</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in results %}
+                <tr>
+                    <td style="opacity:0.5;">{{ forloop.counter }}</td>
+                    <td>{{ r.school_class|default:"—" }}</td>
+                    <td>
+                        <span class="dom-badge">
+                            {% if r.dominant == "R" %}🔧 Réaliste
+                            {% elif r.dominant == "I" %}🔬 Investigateur
+                            {% elif r.dominant == "A" %}🎨 Artistique
+                            {% elif r.dominant == "S" %}🤝 Social
+                            {% elif r.dominant == "E" %}💼 Entreprenant
+                            {% elif r.dominant == "C" %}📊 Conventionnel
+                            {% else %}—{% endif %}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="score-pill">R {{ r.score_r }}</span>
+                        <span class="score-pill">I {{ r.score_i }}</span>
+                        <span class="score-pill">A {{ r.score_a }}</span>
+                        <span class="score-pill">S {{ r.score_s }}</span>
+                        <span class="score-pill">E {{ r.score_e }}</span>
+                        <span class="score-pill">C {{ r.score_c }}</span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="empty">Aucun résultat{% if class_filter %} pour la classe {{ class_filter }}{% endif %}.</p>
+        {% endif %}
+
+    </div>
+    {% endif %}
+
+</div>
+</body>
+</html>

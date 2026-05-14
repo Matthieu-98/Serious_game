@@ -1,0 +1,17 @@
+<div class="topbar">
+    <div class="topbar-left">
+        <span class="brand">🛠️ FATE_95</span>
+        <nav class="nav-links">
+            <a href="{% url 'admin_panel' %}"    class="nav-link {% if active_tab == 'dashboard' %}active{% endif %}">Sessions</a>
+            <a href="{% url 'admin_conseils' %}" class="nav-link {% if active_tab == 'conseils' %}active{% endif %}">Conseils IA</a>
+            <a href="{% url 'admin_questions' %}" class="nav-link {% if active_tab == 'questions' %}active{% endif %}">Questions RIASEC</a>
+        </nav>
+    </div>
+    <div class="topbar-right">
+        <span style="opacity:0.5; font-size:0.82rem;">{{ current_user }}</span>
+        <form method="post" action="{% url 'admin_logout' %}" style="margin:0;">
+            {% csrf_token %}
+            <button type="submit" class="logout-btn">Déconnexion</button>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,179 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Conseils IA — FATE_95</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        * { box-sizing: border-box; }
+        body { background: #0f0f1a; color: #e0e0e0; font-family: sans-serif; margin: 0; }
+
+        .topbar { background: rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.08); padding: 14px 32px; display: flex; align-items: center; justify-content: space-between; }
+        .topbar-left { display: flex; align-items: center; gap: 24px; }
+        .brand { font-weight: bold; font-size: 1rem; }
+        .nav-links { display: flex; gap: 4px; }
+        .nav-link { padding: 6px 14px; border-radius: 8px; color: #ccc; text-decoration: none; font-size: 0.88rem; transition: 0.15s; }
+        .nav-link:hover { background: rgba(255,255,255,0.1); color: #fff; }
+        .nav-link.active { background: rgba(255,255,255,0.15); color: #fff; font-weight: 600; }
+        .topbar-right { display: flex; align-items: center; gap: 16px; }
+        .logout-btn { background: none; border: none; color: #e0e0e0; cursor: pointer; font-size: 0.85rem; opacity: 0.6; text-decoration: underline; }
+
+        .layout { max-width: 1100px; margin: 28px auto; padding: 0 24px; display: grid; grid-template-columns: 380px 1fr; gap: 24px; align-items: start; }
+
+        .card { background: rgba(255,255,255,0.06); border-radius: 16px; padding: 24px 28px; }
+        h2 { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.06em; color: #aaa; margin: 0 0 16px; }
+
+        .message { background: rgba(80,200,120,0.15); border: 1px solid rgba(80,200,120,0.3); border-radius: 8px; padding: 10px 14px; margin-bottom: 18px; font-size: 0.9rem; grid-column: 1 / -1; }
+
+        label { display: block; font-size: 0.83rem; opacity: 0.65; margin-bottom: 5px; }
+        textarea, input[type="text"] { width: 100%; padding: 9px 12px; border-radius: 7px; border: 1px solid rgba(255,255,255,0.13); background: rgba(255,255,255,0.08); color: #fff; font-size: 0.88rem; resize: vertical; }
+
+        .btn { padding: 8px 16px; border-radius: 7px; border: none; background: rgba(255,255,255,0.16); color: #fff; font-size: 0.85rem; cursor: pointer; transition: 0.15s; }
+        .btn:hover { background: rgba(255,255,255,0.26); }
+        .btn-danger { background: rgba(200,60,60,0.3); }
+        .btn-danger:hover { background: rgba(200,60,60,0.5); }
+        .btn-sm { padding: 4px 10px; font-size: 0.78rem; }
+        .btn-edit { background: rgba(100,140,255,0.2); }
+        .btn-edit:hover { background: rgba(100,140,255,0.35); }
+
+        .divider { border: none; border-top: 1px solid rgba(255,255,255,0.08); margin: 16px 0; }
+        .note { font-size: 0.8rem; opacity: 0.5; margin-bottom: 10px; }
+
+        /* Advice list */
+        .advice-list { display: flex; flex-direction: column; gap: 8px; }
+
+        .advice-item { background: rgba(255,255,255,0.04); border-radius: 10px; overflow: hidden; }
+
+        .advice-header { display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px; }
+        .emb-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+        .emb-ok { background: #7fdf9f; }
+        .emb-missing { background: #e09060; }
+        .advice-text { flex: 1; font-size: 0.88rem; line-height: 1.55; }
+        .advice-actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+        /* Edit form */
+        .edit-form { display: none; padding: 0 14px 14px; border-top: 1px solid rgba(255,255,255,0.06); }
+        .edit-form.open { display: block; padding-top: 12px; }
+        .edit-row { display: flex; gap: 8px; align-items: flex-end; margin-top: 8px; }
+
+        .empty-state { opacity: 0.4; font-size: 0.88rem; text-align: center; padding: 24px 0; }
+    </style>
+</head>
+<body>
+
+{% include 'admin_nav.html' %}
+
+<div class="layout">
+
+    {% if message %}
+    <div class="message">{{ message }}</div>
+    {% endif %}
+
+    <!-- Colonne gauche : prompt + ajouter -->
+    <div>
+
+        <!-- Prompt personnalisé -->
+        <div class="card" style="margin-bottom:20px;">
+            <h2>Prompt du chatbot</h2>
+            <p class="note">S'ajoute au prompt de base (profil RIASEC, quête, prénom, classe). Modifiez le ton, les priorités ou les contraintes.</p>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="update_prompt">
+                <textarea name="prompt" rows="7">{{ config.chatbot_prompt }}</textarea>
+                <button type="submit" class="btn" style="margin-top:10px; width:100%;">Enregistrer le prompt</button>
+            </form>
+        </div>
+
+        <!-- Ajouter un conseil -->
+        <div class="card">
+            <h2>Ajouter un conseil</h2>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="add_advice">
+                <textarea name="text" rows="4" placeholder="Ex : Les élèves avec un profil Social (S) s'épanouissent dans les métiers de l'humain : enseignement, santé, travail social…"></textarea>
+                <button type="submit" class="btn" style="margin-top:10px; width:100%;">Ajouter</button>
+            </form>
+
+            <div class="divider"></div>
+
+            <p class="note">
+                Modèle KNN :
+                {% if embedder_ok %}
+                    ✓ MiniLM actif
+                {% else %}
+                    ⚠ Non disponible — <code>pip install sentence-transformers</code>
+                {% endif %}
+            </p>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="reembed_all">
+                <button type="submit" class="btn" style="width:100%;" {% if not embedder_ok %}disabled{% endif %}>
+                    Recalculer tous les embeddings
+                </button>
+            </form>
+        </div>
+
+    </div>
+
+    <!-- Colonne droite : liste des conseils -->
+    <div class="card">
+        <h2>
+            Conseils enregistrés ({{ advices|length }})
+            <span style="font-weight:normal; font-size:0.78rem; opacity:0.45; margin-left:8px;">
+                🟢 embedding OK &nbsp; 🟠 embedding manquant
+            </span>
+        </h2>
+
+        {% if advices %}
+        <div class="advice-list">
+            {% for adv in advices %}
+            <div class="advice-item" id="adv-wrap-{{ adv.id }}">
+
+                <div class="advice-header">
+                    <div class="emb-dot {% if adv.embedding %}emb-ok{% else %}emb-missing{% endif %}"></div>
+                    <div class="advice-text" id="adv-text-{{ adv.id }}">{{ adv.text }}</div>
+                    <div class="advice-actions">
+                        <button type="button" class="btn btn-sm btn-edit" onclick="toggleAdviceEdit({{ adv.id }})">Modifier</button>
+                        <form method="post" style="margin:0;" onsubmit="return confirm('Supprimer ce conseil ?')">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="delete_advice">
+                            <input type="hidden" name="advice_id" value="{{ adv.id }}">
+                            <button type="submit" class="btn btn-sm btn-danger">✕</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="edit-form" id="adv-edit-{{ adv.id }}">
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="edit_advice">
+                        <input type="hidden" name="advice_id" value="{{ adv.id }}">
+                        <textarea name="text" rows="3">{{ adv.text }}</textarea>
+                        <div class="edit-row">
+                            <button type="submit" class="btn btn-sm">Enregistrer</button>
+                            <button type="button" class="btn btn-sm" onclick="toggleAdviceEdit({{ adv.id }})" style="opacity:0.6;">Annuler</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">Aucun conseil. Ajoutez-en à gauche pour enrichir le chatbot.</div>
+        {% endif %}
+    </div>
+
+</div>
+
+<script>
+function toggleAdviceEdit(id) {
+    const form = document.getElementById('adv-edit-' + id);
+    form.classList.toggle('open');
+    const ta = form.querySelector('textarea');
+    if (form.classList.contains('open')) ta.focus();
+}
+</script>
+
+</body>
+</html>
