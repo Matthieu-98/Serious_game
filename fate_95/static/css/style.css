@@ -148,3 +148,71 @@ body {
     background: linear-gradient(135deg, #ffffff, #eeeeee, #cfcfcf);
     color: #222;
 }
+
+.theme-carre {
+    background:
+        linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
+        repeating-linear-gradient(
+            90deg,
+            #1f2937 0px,
+            #1f2937 40px,
+            #374151 40px,
+            #374151 80px
+        );
+    color: white;
+}
+
+.theme-triangle {
+    background:
+        linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),
+        conic-gradient(from 30deg, #991b1b, #f97316, #991b1b);
+    color: white;
+}
+
+.theme-rectangle {
+    background:
+        linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
+        repeating-linear-gradient(
+            0deg,
+            #0f172a 0px,
+            #0f172a 55px,
+            #1e3a8a 55px,
+            #1e3a8a 110px
+        );
+    color: white;
+}
+
+.theme-cercle {
+    background:
+        radial-gradient(circle at center, rgba(255,255,255,0.25), transparent 18%),
+        radial-gradient(circle at 20% 20%, #38bdf8, transparent 25%),
+        radial-gradient(circle at 80% 70%, #a78bfa, transparent 28%),
+        #0f172a;
+    color: white;
+}
+
+.theme-losange {
+    background:
+        linear-gradient(45deg, rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
+        repeating-linear-gradient(
+            45deg,
+            #064e3b 0px,
+            #064e3b 45px,
+            #0f766e 45px,
+            #0f766e 90px
+        );
+    color: white;
+}
+
+.theme-parallelogramme {
+    background:
+        linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
+        repeating-linear-gradient(
+            120deg,
+            #581c87 0px,
+            #581c87 45px,
+            #7e22ce 45px,
+            #7e22ce 90px
+        );
+    color: white;
+}

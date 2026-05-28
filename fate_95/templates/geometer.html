@@ -1,0 +1,28 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FATE_95 - Quête du Géomètre</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body class="{{ theme.body_class|default:'' }}">
+
+<div class="card">
+    <h1>📐 Quête du Géomètre</h1>
+    <p>Choisis la forme géométrique qui t’attire le plus.</p>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <button class="btn" name="shape" value="carre">◼️ Carré</button><br><br>
+        <button class="btn" name="shape" value="triangle">🔺 Triangle</button><br><br>
+        <button class="btn" name="shape" value="rectangle">▭ Rectangle</button><br><br>
+        <button class="btn" name="shape" value="cercle">⚪ Cercle</button><br><br>
+        <button class="btn" name="shape" value="losange">🔷 Losange</button><br><br>
+        <button class="btn" name="shape" value="parallelogramme">▱ Parallélogramme</button>
+    </form>
+</div>
+
+</body>
+</html>

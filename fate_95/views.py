@@ -72,16 +72,58 @@ COLOR_THEMES = {
     },
 }
 
+SHAPE_THEMES = {
+    "carre": {
+        "name": "Carré",
+        "body_class": "theme-carre",
+        "title": "◼️ Monde du Carré",
+    },
+    "triangle": {
+        "name": "Triangle",
+        "body_class": "theme-triangle",
+        "title": "🔺 Monde du Triangle",
+    },
+    "rectangle": {
+        "name": "Rectangle",
+        "body_class": "theme-rectangle",
+        "title": "▭ Monde du Rectangle",
+    },
+    "cercle": {
+        "name": "Cercle",
+        "body_class": "theme-cercle",
+        "title": "⚪ Monde du Cercle",
+    },
+    "losange": {
+        "name": "Losange",
+        "body_class": "theme-losange",
+        "title": "🔷 Monde du Losange",
+    },
+    "parallelogramme": {
+        "name": "Parallélogramme",
+        "body_class": "theme-parallelogramme",
+        "title": "▱ Monde du Parallélogramme",
+    },
+}
 def get_element_theme(request):
     quest = request.session.get("quest")
 
     if quest == "painter":
-        color = request.session.get("color", "bleu")
-        return COLOR_THEMES.get(color, COLOR_THEMES["bleu"])
+        color = request.session.get("color")
+        if color in COLOR_THEMES:
+            return COLOR_THEMES[color]
+        return COLOR_THEMES["bleu"]
 
-    element = request.session.get("element", "lumiere")
-    return ELEMENT_THEMES.get(element, ELEMENT_THEMES["lumiere"])
+    elif quest == "geometer":
+        shape = request.session.get("shape")
+        if shape in SHAPE_THEMES:
+            return SHAPE_THEMES[shape]
+        return SHAPE_THEMES["carre"]
 
+    else:
+        element = request.session.get("element")
+        if element in ELEMENT_THEMES:
+            return ELEMENT_THEMES[element]
+        return ELEMENT_THEMES["lumiere"]
 def ensure_session(request):
     if not request.session.session_key:
         request.session.create()
@@ -197,6 +239,15 @@ def game_view(request):
         questions = Question.objects.filter(element=color).order_by("id")
         quest_label = "Quête du Peintre"
 
+    elif quest == "geometer":
+        shape = request.session.get("shape")
+
+        if not shape:
+            return redirect("geometer")
+
+        questions = Question.objects.filter(element=shape).order_by("id")
+        quest_label = "Quête du Géomètre"
+
     else:
         element = request.session.get("element")
 
@@ -299,7 +350,7 @@ def reset_game(request):
     if request.session.session_key:
         Answer.objects.filter(session_id=request.session.session_key).delete()
 
-    for key in ["element"]:
+    for key in ["element", "color", "shape", "quest"]:
         if key in request.session:
             del request.session[key]
 
@@ -359,4 +410,69 @@ def painter_intro_view(request):
         "data": data,
         "color": color,
         "theme": get_element_theme(request),
+    })
+    
+def geometer_view(request):
+    theme = get_element_theme(request)
+
+    if request.method == "POST":
+        if request.session.session_key:
+            Answer.objects.filter(session_id=request.session.session_key).delete()
+
+        request.session["quest"] = "geometer"
+        request.session["shape"] = request.POST.get("shape")
+
+        if "element" in request.session:
+            del request.session["element"]
+
+        if "color" in request.session:
+            del request.session["color"]
+
+        return redirect("geometer_intro")
+
+    return render(request, "geometer.html", {
+        "theme": theme
+    })
+
+
+def geometer_intro_view(request):
+    shape = request.session.get("shape")
+    theme = get_element_theme(request)
+
+    shape_data = {
+        "carre": {
+            "title": "◼️ Gardien du Carré",
+            "description": "Tu recherches la stabilité, l’organisation et les repères clairs."
+        },
+        "triangle": {
+            "title": "🔺 Esprit du Triangle",
+            "description": "Tu es dynamique, ambitieux et tourné vers l’action."
+        },
+        "rectangle": {
+            "title": "▭ Architecte du Rectangle",
+            "description": "Tu aimes structurer, planifier et construire avec méthode."
+        },
+        "cercle": {
+            "title": "⚪ Voyageur du Cercle",
+            "description": "Tu valorises l’harmonie, les relations et l’équilibre."
+        },
+        "losange": {
+            "title": "🔷 Créateur du Losange",
+            "description": "Tu es original, créatif et tu aimes voir les choses autrement."
+        },
+        "parallelogramme": {
+            "title": "▱ Stratège du Parallélogramme",
+            "description": "Tu sais t’adapter, analyser et trouver des chemins différents."
+        },
+    }
+
+    data = shape_data.get(shape)
+
+    if not data:
+        return redirect("geometer")
+
+    return render(request, "geometer_intro.html", {
+        "data": data,
+        "shape": shape,
+        "theme": theme,
     })

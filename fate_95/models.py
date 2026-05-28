@@ -23,6 +23,13 @@ class Question(models.Model):
         ("rouge", "Rouge"),
         ("noir", "Noir"),
         ("blanc", "Blanc"),
+        
+        ("carre", "Carré"),
+        ("triangle", "Triangle"),
+        ("rectangle", "Rectangle"),
+        ("cercle", "Cercle"),   
+        ("losange", "Losange"),
+        ("parallelogramme", "Parallélogramme"),
     ]
 
     element = models.CharField(max_length=20, choices=ELEMENT_CHOICES)

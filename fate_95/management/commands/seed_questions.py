@@ -526,6 +526,288 @@ class Command(BaseCommand):
     "option_d": "Créatif",
     "type_a": "C", "type_b": "I", "type_c": "S", "type_d": "A"
 },
+
+# ◼️ CARRE
+{
+    "element": "carre",
+    "text": "Quand tu commences un projet :",
+    "option_a": "Je fais un plan précis",
+    "option_b": "Je cherche à comprendre",
+    "option_c": "J’aide à répartir",
+    "option_d": "Je propose une idée",
+    "type_a": "C", "type_b": "I", "type_c": "S", "type_d": "A"
+},
+{
+    "element": "carre",
+    "text": "Ce que tu préfères :",
+    "option_a": "Organiser",
+    "option_b": "Analyser",
+    "option_c": "Travailler avec les autres",
+    "option_d": "Créer",
+    "type_a": "C", "type_b": "I", "type_c": "S", "type_d": "A"
+},
+{
+    "element": "carre",
+    "text": "Face à une consigne :",
+    "option_a": "Je suis rigoureux",
+    "option_b": "Je comprends",
+    "option_c": "J’explique",
+    "option_d": "J’adapte",
+    "type_a": "C", "type_b": "I", "type_c": "S", "type_d": "A"
+},
+{
+    "element": "carre",
+    "text": "En groupe :",
+    "option_a": "Je structure",
+    "option_b": "Je vérifie",
+    "option_c": "Je veille à l’ambiance",
+    "option_d": "Je crée",
+    "type_a": "C", "type_b": "I", "type_c": "S", "type_d": "A"
+},
+{
+    "element": "carre",
+    "text": "Tu es plutôt :",
+    "option_a": "Méthodique",
+    "option_b": "Curieux",
+    "option_c": "Sociable",
+    "option_d": "Imaginatif",
+    "type_a": "C", "type_b": "I", "type_c": "S", "type_d": "A"
+},
+
+# 🔺 TRIANGLE
+{
+    "element": "triangle",
+    "text": "Face à un défi :",
+    "option_a": "Je prends l’initiative",
+    "option_b": "Je passe à l’action",
+    "option_c": "J’analyse",
+    "option_d": "J’encourage",
+    "type_a": "E", "type_b": "R", "type_c": "I", "type_d": "S"
+},
+{
+    "element": "triangle",
+    "text": "Dans un projet :",
+    "option_a": "Je dirige",
+    "option_b": "Je fais",
+    "option_c": "Je réfléchis",
+    "option_d": "Je soutiens",
+    "type_a": "E", "type_b": "R", "type_c": "I", "type_d": "S"
+},
+{
+    "element": "triangle",
+    "text": "Quand il faut décider :",
+    "option_a": "Je décide vite",
+    "option_b": "Je teste",
+    "option_c": "Je compare",
+    "option_d": "Je demande",
+    "type_a": "E", "type_b": "R", "type_c": "I", "type_d": "S"
+},
+{
+    "element": "triangle",
+    "text": "Ce qui te motive :",
+    "option_a": "Gagner",
+    "option_b": "Faire",
+    "option_c": "Comprendre",
+    "option_d": "Aider",
+    "type_a": "E", "type_b": "R", "type_c": "I", "type_d": "S"
+},
+{
+    "element": "triangle",
+    "text": "Tu es à l’aise pour :",
+    "option_a": "Convaincre",
+    "option_b": "Construire",
+    "option_c": "Analyser",
+    "option_d": "Coopérer",
+    "type_a": "E", "type_b": "R", "type_c": "I", "type_d": "S"
+},
+
+# ▭ RECTANGLE
+{
+    "element": "rectangle",
+    "text": "Pour réussir :",
+    "option_a": "Planifier",
+    "option_b": "Construire",
+    "option_c": "Analyser",
+    "option_d": "Diriger",
+    "type_a": "C", "type_b": "R", "type_c": "I", "type_d": "E"
+},
+{
+    "element": "rectangle",
+    "text": "Tu préfères :",
+    "option_a": "Organiser",
+    "option_b": "Manipuler",
+    "option_c": "Comprendre",
+    "option_d": "Diriger",
+    "type_a": "C", "type_b": "R", "type_c": "I", "type_d": "E"
+},
+{
+    "element": "rectangle",
+    "text": "Dans un projet :",
+    "option_a": "Planning",
+    "option_b": "Matériel",
+    "option_c": "Logique",
+    "option_d": "Leadership",
+    "type_a": "C", "type_b": "R", "type_c": "I", "type_d": "E"
+},
+{
+    "element": "rectangle",
+    "text": "Ton point fort :",
+    "option_a": "Méthode",
+    "option_b": "Pratique",
+    "option_c": "Réflexion",
+    "option_d": "Direction",
+    "type_a": "C", "type_b": "R", "type_c": "I", "type_d": "E"
+},
+{
+    "element": "rectangle",
+    "text": "Quand ça bloque :",
+    "option_a": "Je vérifie",
+    "option_b": "Je teste",
+    "option_c": "Je comprends",
+    "option_d": "Je réorganise",
+    "type_a": "C", "type_b": "R", "type_c": "I", "type_d": "E"
+},
+
+# ⚪ CERCLE
+{
+    "element": "cercle",
+    "text": "En groupe :",
+    "option_a": "Je relie",
+    "option_b": "Je crée",
+    "option_c": "J’organise",
+    "option_d": "Je motive",
+    "type_a": "S", "type_b": "A", "type_c": "C", "type_d": "E"
+},
+{
+    "element": "cercle",
+    "text": "Activité :",
+    "option_a": "Aider",
+    "option_b": "Créer",
+    "option_c": "Structurer",
+    "option_d": "Convaincre",
+    "type_a": "S", "type_b": "A", "type_c": "C", "type_d": "E"
+},
+{
+    "element": "cercle",
+    "text": "Tu préfères :",
+    "option_a": "Écouter",
+    "option_b": "Exprimer",
+    "option_c": "Organiser",
+    "option_d": "Parler",
+    "type_a": "S", "type_b": "A", "type_c": "C", "type_d": "E"
+},
+{
+    "element": "cercle",
+    "text": "Conflit :",
+    "option_a": "Apaiser",
+    "option_b": "Créer",
+    "option_c": "Clarifier",
+    "option_d": "Décider",
+    "type_a": "S", "type_b": "A", "type_c": "C", "type_d": "E"
+},
+{
+    "element": "cercle",
+    "text": "Tu es :",
+    "option_a": "Sociable",
+    "option_b": "Créatif",
+    "option_c": "Organisé",
+    "option_d": "Leader",
+    "type_a": "S", "type_b": "A", "type_c": "C", "type_d": "E"
+},
+
+# 🔷 LOSANGE
+{
+    "element": "losange",
+    "text": "Nouvelle idée :",
+    "option_a": "Imaginer",
+    "option_b": "Analyser",
+    "option_c": "Convaincre",
+    "option_d": "Tester",
+    "type_a": "A", "type_b": "I", "type_c": "E", "type_d": "R"
+},
+{
+    "element": "losange",
+    "text": "Projet créatif :",
+    "option_a": "Créer",
+    "option_b": "Comprendre",
+    "option_c": "Présenter",
+    "option_d": "Construire",
+    "type_a": "A", "type_b": "I", "type_c": "E", "type_d": "R"
+},
+{
+    "element": "losange",
+    "text": "Tu aimes :",
+    "option_a": "Imaginer",
+    "option_b": "Comprendre",
+    "option_c": "Parler",
+    "option_d": "Construire",
+    "type_a": "A", "type_b": "I", "type_c": "E", "type_d": "R"
+},
+{
+    "element": "losange",
+    "text": "Problème :",
+    "option_a": "Créer solution",
+    "option_b": "Analyser",
+    "option_c": "Mobiliser",
+    "option_d": "Tester",
+    "type_a": "A", "type_b": "I", "type_c": "E", "type_d": "R"
+},
+{
+    "element": "losange",
+    "text": "Style :",
+    "option_a": "Créatif",
+    "option_b": "Logique",
+    "option_c": "Persuasif",
+    "option_d": "Pratique",
+    "type_a": "A", "type_b": "I", "type_c": "E", "type_d": "R"
+},
+
+# ▱ PARALLELOGRAMME
+{
+    "element": "parallelogramme",
+    "text": "Situation change :",
+    "option_a": "Je décide",
+    "option_b": "J’analyse",
+    "option_c": "Je fais",
+    "option_d": "J’organise",
+    "type_a": "E", "type_b": "I", "type_c": "R", "type_d": "C"
+},
+{
+    "element": "parallelogramme",
+    "text": "Projet :",
+    "option_a": "Diriger",
+    "option_b": "Étudier",
+    "option_c": "Tester",
+    "option_d": "Planifier",
+    "type_a": "E", "type_b": "I", "type_c": "R", "type_d": "C"
+},
+{
+    "element": "parallelogramme",
+    "text": "Tu préfères :",
+    "option_a": "Décider",
+    "option_b": "Comprendre",
+    "option_c": "Faire",
+    "option_d": "Organiser",
+    "type_a": "E", "type_b": "I", "type_c": "R", "type_d": "C"
+},
+{
+    "element": "parallelogramme",
+    "text": "Obstacle :",
+    "option_a": "Agir",
+    "option_b": "Analyser",
+    "option_c": "Tester",
+    "option_d": "Planifier",
+    "type_a": "E", "type_b": "I", "type_c": "R", "type_d": "C"
+},
+{
+    "element": "parallelogramme",
+    "text": "Fonctionnement :",
+    "option_a": "Dynamique",
+    "option_b": "Logique",
+    "option_c": "Concret",
+    "option_d": "Méthodique",
+    "type_a": "E", "type_b": "I", "type_c": "R", "type_d": "C"
+},
         ]
 
         for q in questions:
