@@ -12,7 +12,8 @@ from fate_95.views import (
     painter_view, 
     painter_intro_view,
     geometer_view,
-    geometer_intro_view
+    geometer_intro_view,
+    chatbot_view,
 )
 
 urlpatterns = [
@@ -29,4 +30,5 @@ urlpatterns = [
     path("painter_intro/", painter_intro_view, name="painter_intro"),
     path("geometer/", geometer_view, name='geometer'),
     path("geometer_intro/", geometer_intro_view, name='geometer_intro'),
+    path("chatbot/", chatbot_view, name="chatbot"),
 ]

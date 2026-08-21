@@ -2,8 +2,13 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>FATE_95 - Résultat</title>
+
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
     <style>
         .result-container {
             max-width: 900px;
@@ -61,11 +66,11 @@
         }
 
         .jobs-box {
-            margin-top: 18px;
+            margin-top: 20px;
         }
 
         .jobs-box h3 {
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
 
         .jobs-box ul {
@@ -117,6 +122,24 @@
             background: rgba(255,255,255,0.85);
         }
 
+        .assistant-box {
+            margin-top: 30px;
+            padding: 22px;
+            border-radius: 18px;
+            background: rgba(255,255,255,0.15);
+            text-align: center;
+        }
+
+        .assistant-box h3 {
+            margin-top: 0;
+            margin-bottom: 8px;
+        }
+
+        .assistant-box p {
+            margin-bottom: 18px;
+            opacity: 0.9;
+        }
+
         .actions {
             margin-top: 35px;
             display: flex;
@@ -132,12 +155,151 @@
             padding: 12px 24px;
             border-radius: 10px;
             text-decoration: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
             transition: 0.2s ease;
         }
 
         .btn-secondary:hover {
             background: rgba(255,255,255,0.28);
             transform: scale(1.03);
+        }
+
+        /* CHATBOT */
+
+        #chatbot {
+            position: fixed;
+            right: 24px;
+            bottom: 24px;
+            z-index: 9999;
+        }
+
+        #chatbot-toggle {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            font-size: 26px;
+            background: white;
+            color: #222;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.35);
+            transition: transform 0.2s ease;
+        }
+
+        #chatbot-toggle:hover {
+            transform: scale(1.08);
+        }
+
+        #chatbot-window {
+            position: absolute;
+            right: 0;
+            bottom: 80px;
+
+            width: 380px;
+            height: 520px;
+
+            display: flex;
+            flex-direction: column;
+
+            overflow: hidden;
+
+            border-radius: 20px;
+            background: rgba(20, 20, 30, 0.97);
+            color: white;
+
+            box-shadow: 0 16px 50px rgba(0,0,0,0.45);
+        }
+
+        .chatbot-hidden {
+            display: none !important;
+        }
+
+        .chatbot-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            padding: 16px 18px;
+
+            background: rgba(255,255,255,0.08);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .chatbot-header strong {
+            display: block;
+        }
+
+        .chatbot-header small {
+            display: block;
+            opacity: 0.7;
+            margin-top: 3px;
+        }
+
+        #chatbot-close {
+            border: none;
+            background: transparent;
+            color: white;
+            cursor: pointer;
+            font-size: 28px;
+        }
+
+        .chatbot-messages {
+            flex: 1;
+            overflow-y: auto;
+
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+
+            padding: 18px;
+        }
+
+        .bot-message,
+        .user-message {
+            max-width: 82%;
+            padding: 11px 14px;
+            border-radius: 15px;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+
+        .bot-message {
+            align-self: flex-start;
+            background: rgba(255,255,255,0.13);
+        }
+
+        .user-message {
+            align-self: flex-end;
+            background: #6c63ff;
+        }
+
+        #chatbot-form {
+            display: flex;
+            gap: 8px;
+
+            padding: 14px;
+
+            background: rgba(255,255,255,0.07);
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+
+        #chatbot-input {
+            flex: 1;
+            border: none;
+            outline: none;
+            padding: 12px;
+            border-radius: 10px;
+        }
+
+        #chatbot-form button {
+            border: none;
+            border-radius: 10px;
+            padding: 10px 14px;
+            cursor: pointer;
+            background: white;
+            color: #222;
         }
 
         @media (max-width: 600px) {
@@ -148,6 +310,21 @@
             .dominant-value {
                 font-size: 1.4rem;
             }
+
+            #chatbot {
+                right: 15px;
+                bottom: 15px;
+            }
+
+            #chatbot-window {
+                position: fixed;
+                left: 15px;
+                right: 15px;
+                bottom: 90px;
+
+                width: auto;
+                height: 65vh;
+            }
         }
     </style>
 </head>
@@ -155,124 +332,348 @@
 <body class="{{ theme.body_class|default:'' }}">
 
 <div class="result-container">
+
     <div class="result-card">
 
         <p class="welcome-text">
             Bravo{% if firstname %} {{ firstname }}{% endif %} 👏
         </p>
 
-        <h1 class="main-title">Ton profil RIASEC 🎯</h1>
+        <h1 class="main-title">
+            Ton profil RIASEC 🎯
+        </h1>
+
         <p class="subtitle">
-            Voici le résultat de ton aventure dans <strong>FATE_95</strong>.
+            Voici le résultat de ton aventure dans
+            <strong>FATE_95</strong>.
         </p>
+
 
         {% if dominant %}
         <div class="dominant-box">
-            <p class="dominant-label">Ton profil dominant est :</p>
+
+            <p class="dominant-label">
+                Ton profil dominant est :
+            </p>
 
             <div class="dominant-value">
-                {% if dominant == "R" %}🔧 Réaliste (R){% endif %}
-                {% if dominant == "I" %}🔬 Investigateur (I){% endif %}
-                {% if dominant == "A" %}🎨 Artistique (A){% endif %}
-                {% if dominant == "S" %}🤝 Social (S){% endif %}
-                {% if dominant == "E" %}💼 Entreprenant (E){% endif %}
-                {% if dominant == "C" %}📊 Conventionnel (C){% endif %}
+
+                {% if dominant == "R" %}
+                    🔧 Réaliste (R)
+                {% endif %}
+
+                {% if dominant == "I" %}
+                    🔬 Investigateur (I)
+                {% endif %}
+
+                {% if dominant == "A" %}
+                    🎨 Artistique (A)
+                {% endif %}
+
+                {% if dominant == "S" %}
+                    🤝 Social (S)
+                {% endif %}
+
+                {% if dominant == "E" %}
+                    💼 Entreprenant (E)
+                {% endif %}
+
+                {% if dominant == "C" %}
+                    📊 Conventionnel (C)
+                {% endif %}
+
             </div>
 
+
             {% if descriptions %}
-                {% if dominant == "R" %}<p class="dominant-description">{{ descriptions.R }}</p>{% endif %}
-                {% if dominant == "I" %}<p class="dominant-description">{{ descriptions.I }}</p>{% endif %}
-                {% if dominant == "A" %}<p class="dominant-description">{{ descriptions.A }}</p>{% endif %}
-                {% if dominant == "S" %}<p class="dominant-description">{{ descriptions.S }}</p>{% endif %}
-                {% if dominant == "E" %}<p class="dominant-description">{{ descriptions.E }}</p>{% endif %}
-                {% if dominant == "C" %}<p class="dominant-description">{{ descriptions.C }}</p>{% endif %}
+
+                {% if dominant == "R" %}
+                    <p class="dominant-description">
+                        {{ descriptions.R }}
+                    </p>
+                {% endif %}
+
+                {% if dominant == "I" %}
+                    <p class="dominant-description">
+                        {{ descriptions.I }}
+                    </p>
+                {% endif %}
+
+                {% if dominant == "A" %}
+                    <p class="dominant-description">
+                        {{ descriptions.A }}
+                    </p>
+                {% endif %}
+
+                {% if dominant == "S" %}
+                    <p class="dominant-description">
+                        {{ descriptions.S }}
+                    </p>
+                {% endif %}
+
+                {% if dominant == "E" %}
+                    <p class="dominant-description">
+                        {{ descriptions.E }}
+                    </p>
+                {% endif %}
+
+                {% if dominant == "C" %}
+                    <p class="dominant-description">
+                        {{ descriptions.C }}
+                    </p>
+                {% endif %}
+
             {% endif %}
+
 
             {% if jobs %}
             <div class="jobs-box">
-                <h3>Métiers recommandés</h3>
+
+                <h3>💼 Métiers recommandés</h3>
+
                 <ul>
+
                     {% if dominant == "R" %}
-                        {% for job in jobs.R %}<li>{{ job }}</li>{% endfor %}
+                        {% for job in jobs.R %}
+                            <li>{{ job }}</li>
+                        {% endfor %}
                     {% endif %}
+
                     {% if dominant == "I" %}
-                        {% for job in jobs.I %}<li>{{ job }}</li>{% endfor %}
+                        {% for job in jobs.I %}
+                            <li>{{ job }}</li>
+                        {% endfor %}
                     {% endif %}
+
                     {% if dominant == "A" %}
-                        {% for job in jobs.A %}<li>{{ job }}</li>{% endfor %}
+                        {% for job in jobs.A %}
+                            <li>{{ job }}</li>
+                        {% endfor %}
                     {% endif %}
+
                     {% if dominant == "S" %}
-                        {% for job in jobs.S %}<li>{{ job }}</li>{% endfor %}
+                        {% for job in jobs.S %}
+                            <li>{{ job }}</li>
+                        {% endfor %}
                     {% endif %}
+
                     {% if dominant == "E" %}
-                        {% for job in jobs.E %}<li>{{ job }}</li>{% endfor %}
+                        {% for job in jobs.E %}
+                            <li>{{ job }}</li>
+                        {% endfor %}
                     {% endif %}
+
                     {% if dominant == "C" %}
-                        {% for job in jobs.C %}<li>{{ job }}</li>{% endfor %}
+                        {% for job in jobs.C %}
+                            <li>{{ job }}</li>
+                        {% endfor %}
                     {% endif %}
+
                 </ul>
+
             </div>
             {% endif %}
+
         </div>
         {% endif %}
 
+
         <div class="scores-grid">
+
             <div class="score-box">
-                <div class="score-title">🔧 Réaliste (R)</div>
-                <div class="score-value">{{ scores.R }}</div>
+                <div class="score-title">
+                    🔧 Réaliste (R)
+                </div>
+
+                <div class="score-value">
+                    {{ scores.R }}
+                </div>
+
                 <div class="score-bar">
-                    <div class="score-fill" style="width: {% widthratio scores.R 5 100 %}%;"></div>
+                    <div
+                        class="score-fill"
+                        style="width: {% widthratio scores.R 5 100 %}%;">
+                    </div>
                 </div>
             </div>
 
+
             <div class="score-box">
-                <div class="score-title">🔬 Investigateur (I)</div>
-                <div class="score-value">{{ scores.I }}</div>
+                <div class="score-title">
+                    🔬 Investigateur (I)
+                </div>
+
+                <div class="score-value">
+                    {{ scores.I }}
+                </div>
+
                 <div class="score-bar">
-                    <div class="score-fill" style="width: {% widthratio scores.I 5 100 %}%;"></div>
+                    <div
+                        class="score-fill"
+                        style="width: {% widthratio scores.I 5 100 %}%;">
+                    </div>
                 </div>
             </div>
 
+
             <div class="score-box">
-                <div class="score-title">🎨 Artistique (A)</div>
-                <div class="score-value">{{ scores.A }}</div>
+                <div class="score-title">
+                    🎨 Artistique (A)
+                </div>
+
+                <div class="score-value">
+                    {{ scores.A }}
+                </div>
+
                 <div class="score-bar">
-                    <div class="score-fill" style="width: {% widthratio scores.A 5 100 %}%;"></div>
+                    <div
+                        class="score-fill"
+                        style="width: {% widthratio scores.A 5 100 %}%;">
+                    </div>
                 </div>
             </div>
 
+
             <div class="score-box">
-                <div class="score-title">🤝 Social (S)</div>
-                <div class="score-value">{{ scores.S }}</div>
+                <div class="score-title">
+                    🤝 Social (S)
+                </div>
+
+                <div class="score-value">
+                    {{ scores.S }}
+                </div>
+
                 <div class="score-bar">
-                    <div class="score-fill" style="width: {% widthratio scores.S 5 100 %}%;"></div>
+                    <div
+                        class="score-fill"
+                        style="width: {% widthratio scores.S 5 100 %}%;">
+                    </div>
                 </div>
             </div>
 
+
             <div class="score-box">
-                <div class="score-title">💼 Entreprenant (E)</div>
-                <div class="score-value">{{ scores.E }}</div>
+                <div class="score-title">
+                    💼 Entreprenant (E)
+                </div>
+
+                <div class="score-value">
+                    {{ scores.E }}
+                </div>
+
                 <div class="score-bar">
-                    <div class="score-fill" style="width: {% widthratio scores.E 5 100 %}%;"></div>
+                    <div
+                        class="score-fill"
+                        style="width: {% widthratio scores.E 5 100 %}%;">
+                    </div>
                 </div>
             </div>
 
+
             <div class="score-box">
-                <div class="score-title">📊 Conventionnel (C)</div>
-                <div class="score-value">{{ scores.C }}</div>
+                <div class="score-title">
+                    📊 Conventionnel (C)
+                </div>
+
+                <div class="score-value">
+                    {{ scores.C }}
+                </div>
+
                 <div class="score-bar">
-                    <div class="score-fill" style="width: {% widthratio scores.C 5 100 %}%;"></div>
+                    <div
+                        class="score-fill"
+                        style="width: {% widthratio scores.C 5 100 %}%;">
+                    </div>
                 </div>
             </div>
+
         </div>
 
+
+        <div class="assistant-box">
+
+            <h3>
+                🤖 Tu veux mieux comprendre ton résultat ?
+            </h3>
+
+            <p>
+                Pose une question au guide FATE_95.
+                Il peut t'expliquer ton profil, te présenter
+                des métiers ou répondre à tes questions
+                sur ton orientation.
+            </p>
+
+            <button
+                type="button"
+                class="btn"
+                id="open-chatbot-result"
+            >
+                💬 Parler au guide
+            </button>
+
+        </div>
+
+
         <div class="actions">
-            <a href="{% url 'reset' %}" class="btn">Rejouer</a>
-            <a href="/" class="btn-secondary">Retour à l’accueil</a>
+
+            <a
+                href="{% url 'reset' %}"
+                class="btn"
+            >
+                🔄 Choisir une autre quête
+            </a>
+
+            <a
+                href="/"
+                class="btn-secondary"
+            >
+                🏠 Retour à l’accueil
+            </a>
+
         </div>
 
     </div>
+
 </div>
+
+
+<!-- Chatbot placé correctement dans BODY -->
+{% include "chatbot_widget.html" %}
+
+
+<script src="{% static 'js/chatbot.js' %}"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const openButton =
+        document.getElementById("open-chatbot-result");
+
+    const chatbotWindow =
+        document.getElementById("chatbot-window");
+
+    const chatbotInput =
+        document.getElementById("chatbot-input");
+
+
+    if (openButton && chatbotWindow) {
+
+        openButton.addEventListener("click", function () {
+
+            chatbotWindow.classList.remove(
+                "chatbot-hidden"
+            );
+
+            if (chatbotInput) {
+                chatbotInput.focus();
+            }
+
+        });
+
+    }
+
+});
+</script>
 
 </body>
 </html>

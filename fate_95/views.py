@@ -1,6 +1,10 @@
+from urllib import request
+
 from django.shortcuts import render, redirect
 from .models import Question, Answer
-
+from openai import OpenAI
+from django.http import JsonResponse
+import os
 
 element_riasec = {
     "feu": "E",        # Entreprenant
@@ -104,6 +108,9 @@ SHAPE_THEMES = {
         "title": "▱ Monde du Parallélogramme",
     },
 }
+
+client = OpenAI()
+
 def get_element_theme(request):
     quest = request.session.get("quest")
 
@@ -336,6 +343,8 @@ def result_view(request):
     }
 
     firstname = request.session.get("firstname", "")
+    request.session["riasec_dominant"] = dominant
+    request.session["riasec_scores"] = scores
 
     return render(request, "result.html", {
         "scores": scores,
@@ -411,6 +420,7 @@ def painter_intro_view(request):
         "color": color,
         "theme": get_element_theme(request),
     })
+   
     
 def geometer_view(request):
     theme = get_element_theme(request)
@@ -476,3 +486,85 @@ def geometer_intro_view(request):
         "shape": shape,
         "theme": theme,
     })
+
+def chatbot_view(request):
+    if request.method != "POST":
+        return JsonResponse(
+            {"error": "Méthode non autorisée."},
+            status=405
+        )
+
+    message = request.POST.get("message", "").strip()
+
+    if not message:
+        return JsonResponse(
+            {"error": "Le message est vide."},
+            status=400
+        )
+
+    firstname = request.session.get("firstname", "élève")
+    school_class = request.session.get("school_class", "")
+    quest = request.session.get("quest", "")
+    element = request.session.get("element")
+    color = request.session.get("color")
+    shape = request.session.get("shape")
+
+    context = f"""
+    Prénom : {firstname}
+    Classe : {school_class}
+    Quête actuelle : {quest}
+    Élément choisi : {element or "aucun"}
+    Couleur choisie : {color or "aucune"}
+    Forme choisie : {shape or "aucune"}
+    """
+
+    instructions = """
+    Tu es le guide d'orientation pédagogique du jeu FATE_95.
+
+    Tu échanges principalement avec des collégiens et des lycéens.
+
+    Tes missions :
+    - expliquer simplement les métiers ;
+    - aider l'élève à comprendre ses centres d'intérêt ;
+    - expliquer le modèle RIASEC avec des mots adaptés à son âge ;
+    - proposer des pistes de métiers et de formations ;
+    - poser occasionnellement une question courte pour aider l'élève
+      à réfléchir sur ses préférences.
+
+    Règles :
+    - sois bienveillant, clair et concis ;
+    - tutoie l'élève ;
+    - ne prétends jamais qu'un test détermine définitivement son avenir ;
+    - présente les métiers comme des pistes à explorer ;
+    - évite le jargon ;
+    - reste centré sur l'orientation scolaire et professionnelle ;
+    - si tu ne sais pas quelque chose, dis-le clairement.
+    """
+
+    try:
+        response = client.responses.create(
+            model="gpt-5.6",
+            instructions=instructions,
+            input=f"""
+            Informations sur l'élève :
+            {context}
+
+            Message de l'élève :
+            {message}
+            """
+        )
+
+        return JsonResponse({
+            "reply": response.output_text
+        })
+
+    except Exception as e:
+        print("Erreur chatbot :", e)
+
+        return JsonResponse(
+            {
+                "error":
+                "Le guide est momentanément indisponible. Réessaie dans quelques instants."
+            },
+            status=500
+        )
