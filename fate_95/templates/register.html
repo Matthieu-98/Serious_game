@@ -1,83 +1,234 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>FATE_95 - Inscription</title>
+{% extends "base.html" %}
+{% load static %}
 
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+{% block title %}
+FATE_95 - Création du profil
+{% endblock %}
 
-    <style>
-        .form-group {
-            margin-bottom: 20px;
-        }
+{% block extra_css %}
+<link
+    rel="stylesheet"
+    href="{% static 'css/register.css' %}"
+>
+{% endblock %}
 
-        input, select {
-            padding: 12px;
-            width: 80%;
-            border-radius: 10px;
-            border: none;
-            outline: none;
-            font-size: 16px;
-        }
 
-        select {
-            cursor: pointer;
-        }
+{% block content %}
 
-        .btn {
-            margin-top: 20px;
-            width: 85%;
-        }
-
-        .title {
-            margin-bottom: 10px;
-        }
-
-        .subtitle {
-            font-size: 1em;
-            opacity: 0.8;
-            margin-bottom: 30px;
-        }
-    </style>
-</head>
-
-<body>
-
-<div class="card">
-
-    <h1 class="title">📝 FATE_95</h1>
-    <p class="subtitle">Crée ton profil pour commencer l'aventure</p>
-
-    <form method="POST">
-
-        {% csrf_token %}
-
-        <div class="form-group">
-            <input type="text" name="firstname" placeholder="👤 Ton prénom" required>
-        </div>
-
-        <div class="form-group">
-            <select name="school_class" required>
-                <option value="">🎓 Choisis ta classe</option>
-                <option value="6eme">6ème</option>
-                <option value="5eme">5ème</option>
-                <option value="4eme">4ème</option>
-                <option value="3eme">3ème</option>
-                <option value="2nde">2nde</option>
-                <option value="1ere">1ère</option>
-                <option value="terminale">Terminale</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <input type="password" name="password" placeholder="🔒 Mot de passe" required>
-        </div>
-
-        <button class="btn" type="submit">🚀 Lancer le jeu</button>
-
-    </form>
-
+<div class="game-background">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
 </div>
 
-</body>
-</html>
+
+<main class="register-screen">
+
+    <!-- INTRODUCTION -->
+
+    <section class="intro-panel">
+
+        <div class="chapter">
+            ✦ PROLOGUE
+        </div>
+
+        <h1 class="game-logo">
+            FATE_95
+        </h1>
+
+        <p class="game-tagline">
+            Ton aventure commence ici.
+            Explore tes préférences, relève les quêtes
+            et découvre des pistes pour ton avenir.
+        </p>
+
+
+        <div class="mission-list">
+
+            <div class="mission-item">
+                <span class="mission-icon">🧭</span>
+                <span>Explore plusieurs univers</span>
+            </div>
+
+            <div class="mission-item">
+                <span class="mission-icon">⚔️</span>
+                <span>Relève des quêtes</span>
+            </div>
+
+            <div class="mission-item">
+                <span class="mission-icon">✨</span>
+                <span>Découvre ton profil RIASEC</span>
+            </div>
+
+            <div class="mission-item">
+                <span class="mission-icon">💼</span>
+                <span>Débloque des pistes de métiers</span>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- PROFIL -->
+
+    <section class="profile-panel">
+
+        <header class="profile-header">
+
+            <span class="step">
+                ÉTAPE 01
+            </span>
+
+            <h2>
+                Crée ton explorateur
+            </h2>
+
+            <p>
+                Ces informations permettront de personnaliser
+                ton aventure.
+            </p>
+
+        </header>
+
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+
+            <!-- PRÉNOM -->
+
+            <div class="form-group">
+
+                <label
+                    class="form-label"
+                    for="firstname"
+                >
+                    NOM DE L'EXPLORATEUR
+                </label>
+
+                <div class="input-wrapper">
+
+                    <span class="input-icon">
+                        👤
+                    </span>
+
+                    <input
+                        id="firstname"
+                        type="text"
+                        name="firstname"
+                        placeholder="Ton prénom"
+                        maxlength="50"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- CLASSE -->
+
+            <div class="form-group">
+
+                <label
+                    class="form-label"
+                    for="school_class"
+                >
+                    NIVEAU ACTUEL
+                </label>
+
+                <div class="input-wrapper">
+
+                    <span class="input-icon">
+                        🎓
+                    </span>
+
+                    <select
+                        id="school_class"
+                        name="school_class"
+                        required
+                    >
+
+                        <option value="">
+                            Choisis ta classe
+                        </option>
+
+                        <option value="6eme">6ème</option>
+                        <option value="5eme">5ème</option>
+                        <option value="4eme">4ème</option>
+                        <option value="3eme">3ème</option>
+
+                        <option value="2nde">2nde</option>
+                        <option value="1ere">1ère</option>
+                        <option value="terminale">
+                            Terminale
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <!-- MOT DE PASSE -->
+
+            <div class="form-group">
+
+                <label
+                    class="form-label"
+                    for="password"
+                >
+                    CLÉ D'ACCÈS
+                </label>
+
+                <div class="input-wrapper">
+
+                    <span class="input-icon">
+                        🔐
+                    </span>
+
+                    <input
+                        id="password"
+                        type="password"
+                        name="password"
+                        placeholder="Ton mot de passe"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <button
+                class="game-button game-button-primary"
+                type="submit"
+            >
+                ⚔️ COMMENCER L'AVENTURE
+
+                <small>
+                    Accéder au monde de FATE_95
+                </small>
+            </button>
+
+
+            <aside class="game-tip">
+
+                💡 <strong>Conseil :</strong>
+
+                choisis pendant les quêtes les réponses
+                qui te ressemblent vraiment.
+
+                Il n'y a pas de bonne ou de mauvaise réponse.
+
+            </aside>
+
+        </form>
+
+    </section>
+
+</main>
+
+{% endblock %}

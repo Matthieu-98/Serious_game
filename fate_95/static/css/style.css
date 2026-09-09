@@ -1,251 +1,439 @@
-/* 🌌 Style global */
-body {
-    font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #1d2671, #c33764);
-    color: white;
-    text-align: center;
-    padding: 50px;
-    margin: 0;
+/* =========================================================
+   VARIABLES GLOBALES
+========================================================= */
+
+:root {
+    --font-main: Arial, sans-serif;
+
+    --color-white: #ffffff;
+    --color-dark: #222222;
+    --color-text-muted: rgba(255, 255, 255, 0.7);
+
+    --color-primary: #6c63ff;
+    --color-primary-dark: #4f46e5;
+
+    --bg-card: rgba(255, 255, 255, 0.12);
+    --bg-panel: rgba(20, 20, 30, 0.96);
+
+    --border-soft: rgba(255, 255, 255, 0.12);
+
+    --radius-small: 10px;
+    --radius-medium: 15px;
+    --radius-large: 20px;
+
+    --shadow-soft: 0 0 20px rgba(0, 0, 0, 0.25);
+    --shadow-strong: 0 15px 50px rgba(0, 0, 0, 0.45);
+
+    --transition-fast: 0.2s ease;
 }
 
-/* 🧱 Carte centrale */
-.card {
-    background: rgba(255,255,255,0.1);
-    padding: 40px;
-    border-radius: 20px;
-    display: inline-block;
-    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+
+/* =========================================================
+   RESET
+========================================================= */
+
+* {
+    box-sizing: border-box;
 }
 
-/* 🎮 Titre */
-h1 {
-    font-size: 3em;
-    margin-bottom: 10px;
-}
-
-/* 📝 Texte */
-p {
-    font-size: 1.2em;
-    margin-bottom: 20px;
-}
-
-/* 🚀 Bouton */
-.btn {
-    background: white;
-    color: #333;
-    padding: 15px 30px;
-    border-radius: 10px;
-    text-decoration: none;
-    font-size: 18px;
-    transition: 0.3s;
-    display: inline-block;
-}
-
-.btn:hover {
-    background: #333;
-    color: white;
-    transform: scale(1.1);
-}
-
-/* 📦 Section infos */
-.info {
-    margin-top: 40px;
+html {
+    min-height: 100%;
 }
 
 body {
-    font-family: Arial, sans-serif;
-    color: white;
-    text-align: center;
-    padding: 50px;
-    margin: 0;
     min-height: 100vh;
-    transition: background 0.5s ease;
+
+    margin: 0;
+    padding: 50px;
+
+    font-family: var(--font-main);
+
+    color: var(--color-white);
+    text-align: center;
+
+    background:
+        linear-gradient(
+            135deg,
+            #1d2671,
+            #c33764
+        );
+
+    transition:
+        background 0.5s ease;
 }
 
+
+/* =========================================================
+   TYPOGRAPHIE
+========================================================= */
+
+h1 {
+    margin-bottom: 10px;
+
+    font-size: 3rem;
+}
+
+p {
+    margin-bottom: 20px;
+
+    font-size: 1.2rem;
+}
+
+
+/* =========================================================
+   COMPOSANTS COMMUNS
+========================================================= */
+
 .card {
-    background: rgba(255,255,255,0.12);
-    padding: 40px;
-    border-radius: 20px;
     display: inline-block;
-    box-shadow: 0 0 20px rgba(0,0,0,0.25);
+
+    padding: 40px;
+
+    border-radius: var(--radius-large);
+
+    background: var(--bg-card);
+
+    box-shadow: var(--shadow-soft);
+
     backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
 }
 
 .btn {
-    background: white;
-    color: #333;
-    padding: 12px 24px;
-    border-radius: 10px;
-    text-decoration: none;
-    font-size: 16px;
-    border: none;
-    cursor: pointer;
-    transition: transform 0.2s ease, background 0.2s ease;
+    display: inline-block;
+
     margin: 6px;
+    padding: 12px 24px;
+
+    border: none;
+    border-radius: var(--radius-small);
+
+    background: var(--color-white);
+    color: #333333;
+
+    font-size: 16px;
+    text-decoration: none;
+
+    cursor: pointer;
+
+    transition:
+        transform var(--transition-fast),
+        background var(--transition-fast),
+        color var(--transition-fast);
 }
 
 .btn:hover {
     transform: scale(1.05);
+
+    background: #333333;
+    color: var(--color-white);
 }
 
-/* FEU */
-.theme-feu {
-    background: url('/static/images/backgrounds/feu.png') no-repeat center;
-    background-size: cover; 
+.info {
+    margin-top: 40px;
 }
 
-/* EAU */
-.theme-eau {
-    background: url('/static/images/backgrounds/eau.png') no-repeat center;
-    background-size: cover;
-}
 
-/* VENT */
-.theme-vent {
-    background: url('/static/images/backgrounds/vent.png') no-repeat center;
-    background-size: cover;
-}
+/* =========================================================
+   THÈMES ÉLÉMENTALISTE
+========================================================= */
 
-/* TERRE */
-.theme-terre {
-    background: url('/static/images/backgrounds/terre.png') no-repeat center;
-    background-size: cover;
-}
-
-/* OMBRE */
-.theme-ombre {
-    background: url('/static/images/backgrounds/ombre.png') no-repeat center;
-    background-size: cover;
-}
-
-/* LUMIÈRE */
+.theme-feu,
+.theme-eau,
+.theme-vent,
+.theme-terre,
+.theme-ombre,
 .theme-lumiere {
-    background: url('/static/images/backgrounds/lumiere.png') no-repeat center;
+    background-position: center;
+    background-repeat: no-repeat;
     background-size: cover;
 }
+
+.theme-feu {
+    background-image:
+        linear-gradient(
+            rgba(0, 0, 0, 0.25),
+            rgba(0, 0, 0, 0.25)
+        ),
+        url("/static/images/backgrounds/feu.png");
+}
+
+.theme-eau {
+    background-image:
+        linear-gradient(
+            rgba(0, 0, 0, 0.2),
+            rgba(0, 0, 0, 0.2)
+        ),
+        url("/static/images/backgrounds/eau.png");
+}
+
+.theme-vent {
+    background-image:
+        linear-gradient(
+            rgba(0, 0, 0, 0.15),
+            rgba(0, 0, 0, 0.15)
+        ),
+        url("/static/images/backgrounds/vent.png");
+}
+
+.theme-terre {
+    background-image:
+        linear-gradient(
+            rgba(0, 0, 0, 0.25),
+            rgba(0, 0, 0, 0.25)
+        ),
+        url("/static/images/backgrounds/terre.png");
+}
+
+.theme-ombre {
+    background-image:
+        linear-gradient(
+            rgba(0, 0, 0, 0.35),
+            rgba(0, 0, 0, 0.35)
+        ),
+        url("/static/images/backgrounds/ombre.png");
+}
+
+.theme-lumiere {
+    background-image:
+        linear-gradient(
+            rgba(0, 0, 0, 0.12),
+            rgba(0, 0, 0, 0.12)
+        ),
+        url("/static/images/backgrounds/lumiere.png");
+}
+
+
+/* =========================================================
+   THÈMES PEINTRE
+========================================================= */
 
 .theme-bleu {
-    background: linear-gradient(135deg, #0d47a1, #1e88e5, #90caf9);
+    background:
+        linear-gradient(
+            135deg,
+            #0d47a1,
+            #1e88e5,
+            #90caf9
+        );
+
     color: white;
 }
 
 .theme-jaune {
-    background: linear-gradient(135deg, #f9a825, #ffd54f, #fff59d);
+    background:
+        linear-gradient(
+            135deg,
+            #f9a825,
+            #ffd54f,
+            #fff59d
+        );
+
     color: #2d2300;
 }
 
 .theme-rouge {
-    background: linear-gradient(135deg, #7f0000, #d32f2f, #ff8a80);
+    background:
+        linear-gradient(
+            135deg,
+            #7f0000,
+            #d32f2f,
+            #ff8a80
+        );
+
     color: white;
 }
 
 .theme-noir {
-    background: linear-gradient(135deg, #000000, #212121, #616161);
+    background:
+        linear-gradient(
+            135deg,
+            #000000,
+            #212121,
+            #616161
+        );
+
     color: white;
 }
 
 .theme-blanc {
-    background: linear-gradient(135deg, #ffffff, #eeeeee, #cfcfcf);
-    color: #222;
+    background:
+        linear-gradient(
+            135deg,
+            #ffffff,
+            #eeeeee,
+            #cfcfcf
+        );
+
+    color: #222222;
+}
+
+
+/* =========================================================
+   THÈMES GÉOMÈTRE
+========================================================= */
+
+.theme-carre,
+.theme-triangle,
+.theme-rectangle,
+.theme-cercle,
+.theme-losange,
+.theme-parallelogramme {
+    color: white;
 }
 
 .theme-carre {
     background:
-        linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
+        linear-gradient(
+            rgba(0, 0, 0, 0.45),
+            rgba(0, 0, 0, 0.45)
+        ),
         repeating-linear-gradient(
             90deg,
-            #1f2937 0px,
+            #1f2937 0,
             #1f2937 40px,
             #374151 40px,
             #374151 80px
         );
-    color: white;
 }
 
 .theme-triangle {
     background:
-        linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),
-        conic-gradient(from 30deg, #991b1b, #f97316, #991b1b);
-    color: white;
+        linear-gradient(
+            rgba(0, 0, 0, 0.4),
+            rgba(0, 0, 0, 0.4)
+        ),
+        conic-gradient(
+            from 30deg,
+            #991b1b,
+            #f97316,
+            #991b1b
+        );
 }
 
 .theme-rectangle {
     background:
-        linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
+        linear-gradient(
+            rgba(0, 0, 0, 0.45),
+            rgba(0, 0, 0, 0.45)
+        ),
         repeating-linear-gradient(
             0deg,
-            #0f172a 0px,
+            #0f172a 0,
             #0f172a 55px,
             #1e3a8a 55px,
             #1e3a8a 110px
         );
-    color: white;
 }
 
 .theme-cercle {
     background:
-        radial-gradient(circle at center, rgba(255,255,255,0.25), transparent 18%),
-        radial-gradient(circle at 20% 20%, #38bdf8, transparent 25%),
-        radial-gradient(circle at 80% 70%, #a78bfa, transparent 28%),
+        radial-gradient(
+            circle at center,
+            rgba(255, 255, 255, 0.25),
+            transparent 18%
+        ),
+        radial-gradient(
+            circle at 20% 20%,
+            #38bdf8,
+            transparent 25%
+        ),
+        radial-gradient(
+            circle at 80% 70%,
+            #a78bfa,
+            transparent 28%
+        ),
         #0f172a;
-    color: white;
 }
 
 .theme-losange {
     background:
-        linear-gradient(45deg, rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
+        linear-gradient(
+            45deg,
+            rgba(0, 0, 0, 0.45),
+            rgba(0, 0, 0, 0.45)
+        ),
         repeating-linear-gradient(
             45deg,
-            #064e3b 0px,
+            #064e3b 0,
             #064e3b 45px,
             #0f766e 45px,
             #0f766e 90px
         );
-    color: white;
 }
 
 .theme-parallelogramme {
     background:
-        linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
+        linear-gradient(
+            rgba(0, 0, 0, 0.45),
+            rgba(0, 0, 0, 0.45)
+        ),
         repeating-linear-gradient(
             120deg,
-            #581c87 0px,
+            #581c87 0,
             #581c87 45px,
             #7e22ce 45px,
             #7e22ce 90px
         );
-    color: white;
 }
+
+
+/* =========================================================
+   CHATBOT
+========================================================= */
 
 #chatbot {
     position: fixed;
+
     right: 25px;
     bottom: 25px;
+
     z-index: 9999;
 }
+
+
+/* Bouton flottant */
 
 #chatbot-toggle {
     width: 65px;
     height: 65px;
+
+    display: grid;
+    place-items: center;
+
     border: none;
     border-radius: 50%;
-    cursor: pointer;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--color-primary),
+            var(--color-primary-dark)
+        );
+
+    color: white;
 
     font-size: 28px;
 
-    background: #ffffff;
-    color: #333;
+    cursor: pointer;
 
     box-shadow:
-        0 8px 25px rgba(0, 0, 0, 0.3);
+        0 8px 25px rgba(0, 0, 0, 0.35);
 
-    transition: 0.2s ease;
+    transition:
+        transform var(--transition-fast),
+        box-shadow var(--transition-fast);
 }
 
 #chatbot-toggle:hover {
     transform: scale(1.08);
+
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.45);
 }
 
+
+/* Fenêtre */
 
 #chatbot-window {
     position: absolute;
@@ -261,78 +449,118 @@ body {
 
     overflow: hidden;
 
-    border-radius: 20px;
+    border:
+        1px solid var(--border-soft);
+
+    border-radius:
+        var(--radius-large);
 
     background:
-        rgba(20, 20, 30, 0.96);
+        var(--bg-panel);
 
-    color: white;
+    color:
+        var(--color-white);
 
     box-shadow:
-        0 15px 50px rgba(0, 0, 0, 0.45);
-}
+        var(--shadow-strong);
 
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
 
 .chatbot-hidden {
     display: none !important;
 }
 
 
-.chatbot-header {
-    padding: 16px 18px;
+/* Header */
 
+.chatbot-header {
     display: flex;
+
     justify-content: space-between;
     align-items: center;
 
+    padding: 16px 18px;
+
     background:
         rgba(255, 255, 255, 0.08);
+
+    border-bottom:
+        1px solid var(--border-soft);
 }
 
+.chatbot-header strong {
+    display: block;
+}
 
 .chatbot-header small {
     display: block;
-    opacity: 0.7;
+
     margin-top: 3px;
+
+    opacity: 0.7;
 }
 
 
+/* Fermer */
+
 #chatbot-close {
+    padding: 0;
+
     border: none;
+
     background: transparent;
+
     color: white;
+
+    font-size: 28px;
+    line-height: 1;
 
     cursor: pointer;
 
-    font-size: 28px;
+    transition:
+        transform var(--transition-fast),
+        opacity var(--transition-fast);
+}
+
+#chatbot-close:hover {
+    transform: scale(1.1);
+
+    opacity: 0.75;
 }
 
 
+/* Messages */
+
 .chatbot-messages {
     flex: 1;
-
-    padding: 18px;
-
-    overflow-y: auto;
 
     display: flex;
     flex-direction: column;
 
     gap: 12px;
-}
 
+    padding: 18px;
+
+    overflow-y: auto;
+
+    text-align: left;
+}
 
 .bot-message,
 .user-message {
-    max-width: 80%;
+    max-width: 82%;
 
     padding: 11px 14px;
 
-    border-radius: 15px;
+    border-radius: var(--radius-medium);
 
     line-height: 1.4;
-}
 
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
 
 .bot-message {
     align-self: flex-start;
@@ -341,63 +569,188 @@ body {
         rgba(255, 255, 255, 0.13);
 }
 
-
 .user-message {
     align-self: flex-end;
 
     background:
-        #6c63ff;
+        linear-gradient(
+            135deg,
+            var(--color-primary),
+            var(--color-primary-dark)
+        );
 }
 
 
-#chatbot-form {
-    padding: 14px;
+/* Formulaire chatbot */
 
+#chatbot-form {
     display: flex;
+
+    align-items: flex-end;
+
     gap: 8px;
+
+    padding: 14px;
 
     background:
         rgba(255, 255, 255, 0.07);
+
+    border-top:
+        1px solid var(--border-soft);
 }
 
+
+/* Textarea */
 
 #chatbot-input {
     flex: 1;
 
-    border: none;
+    min-height: 42px;
+    max-height: 120px;
+
+    padding: 11px 12px;
+
+    border:
+        1px solid var(--border-soft);
+
+    border-radius:
+        var(--radius-small);
+
     outline: none;
 
-    padding: 12px;
+    resize: none;
+    overflow-y: auto;
 
-    border-radius: 10px;
+    background:
+        rgba(255, 255, 255, 0.08);
+
+    color:
+        white;
+
+    font-family:
+        var(--font-main);
+
+    font-size: 0.95rem;
+    line-height: 1.4;
+
+    transition:
+        border-color var(--transition-fast),
+        background var(--transition-fast);
+}
+
+#chatbot-input:focus {
+    border-color:
+        var(--color-primary);
+
+    background:
+        rgba(255, 255, 255, 0.12);
+}
+
+#chatbot-input::placeholder {
+    color:
+        rgba(255, 255, 255, 0.45);
 }
 
 
+/* Bouton envoyer */
+
 #chatbot-form button {
-    border: none;
+    min-height: 42px;
 
     padding: 10px 14px;
 
-    border-radius: 10px;
+    border: none;
+
+    border-radius:
+        var(--radius-small);
+
+    background:
+        var(--color-white);
+
+    color:
+        #222222;
+
+    font-weight: 700;
 
     cursor: pointer;
 
-    background: white;
-    color: #222;
+    transition:
+        transform var(--transition-fast),
+        background var(--transition-fast);
+}
+
+#chatbot-form button:hover {
+    transform: translateY(-2px);
+
+    background:
+        #eeeeee;
 }
 
 
-@media (max-width: 500px) {
+/* Indication clavier */
+
+.chatbot-input-hint {
+    padding:
+        0 14px 10px;
+
+    background:
+        rgba(255, 255, 255, 0.07);
+
+    color:
+        rgba(255, 255, 255, 0.45);
+
+    font-size:
+        0.7rem;
+
+    text-align:
+        left;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 600px) {
+
+    body {
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 2.2rem;
+    }
+
+    .card {
+        width: 100%;
+
+        padding: 25px;
+    }
+
+    #chatbot {
+        right: 15px;
+        bottom: 15px;
+    }
+
+    #chatbot-toggle {
+        width: 58px;
+        height: 58px;
+
+        font-size: 24px;
+    }
 
     #chatbot-window {
-        width:
-            calc(100vw - 30px);
+        position: fixed;
 
-        height:
-            70vh;
+        left: 15px;
+        right: 15px;
 
-        right:
-            -10px;
+        bottom: 85px;
+
+        width: auto;
+        height: 68vh;
+
+        max-height: 600px;
     }
 
 }

@@ -29,19 +29,24 @@
         <form id="chatbot-form">
             {% csrf_token %}
 
-            <input
+            <textarea
                 id="chatbot-input"
-                type="text"
+                name="message"
                 placeholder="Pose ta question..."
                 autocomplete="off"
-                maxlength="500"
+                maxlength="1000"
+                rows="1"
                 required
-            >
+            ></textarea>
 
             <button type="submit">
                 Envoyer
             </button>
         </form>
+
+        <div class="chatbot-input-hint">
+            Entrée pour envoyer • Shift + Entrée pour aller à la ligne
+        </div>
 
     </div>
 </div>

@@ -1,8 +1,9 @@
 from urllib import request
+from openai import OpenAI, RateLimitError
 
 from django.shortcuts import render, redirect
 from .models import Question, Answer
-from openai import OpenAI
+
 from django.http import JsonResponse
 import os
 
@@ -315,12 +316,22 @@ def game_view(request):
 def result_view(request):
     theme = get_element_theme(request)
 
-    answers = Answer.objects.filter(session_id=request.session.session_key)
+    answers = Answer.objects.filter(
+        session_id=request.session.session_key
+    )
 
-    scores = {"R": 0, "I": 0, "A": 0, "S": 0, "E": 0, "C": 0}
+    scores = {
+        "R": 0,
+        "I": 0,
+        "A": 0,
+        "S": 0,
+        "E": 0,
+        "C": 0
+    }
 
     for answer in answers:
-        scores[answer.riasec_type] += 1
+        if answer.riasec_type in scores:
+            scores[answer.riasec_type] += 1
 
     dominant = max(scores, key=scores.get) if answers.exists() else None
 
@@ -334,26 +345,68 @@ def result_view(request):
     }
 
     jobs = {
-        "R": ["Mécanicien", "Technicien", "Artisan", "Électricien"],
-        "I": ["Ingénieur", "Chercheur", "Scientifique", "Data analyst"],
-        "A": ["Graphiste", "Designer", "Musicien", "Réalisateur"],
-        "S": ["Professeur", "Infirmier", "Psychologue", "Éducateur"],
-        "E": ["Entrepreneur", "Commercial", "Manager", "Chef de projet"],
-        "C": ["Comptable", "Assistant administratif", "Gestionnaire", "Secrétaire"],
+        "R": [
+            "Mécanicien",
+            "Technicien",
+            "Artisan",
+            "Électricien"
+        ],
+        "I": [
+            "Ingénieur",
+            "Chercheur",
+            "Scientifique",
+            "Data analyst"
+        ],
+        "A": [
+            "Graphiste",
+            "Designer",
+            "Musicien",
+            "Réalisateur"
+        ],
+        "S": [
+            "Professeur",
+            "Infirmier",
+            "Psychologue",
+            "Éducateur"
+        ],
+        "E": [
+            "Entrepreneur",
+            "Commercial",
+            "Manager",
+            "Chef de projet"
+        ],
+        "C": [
+            "Comptable",
+            "Assistant administratif",
+            "Gestionnaire",
+            "Secrétaire"
+        ],
     }
 
+    # Métiers correspondant au profil dominant
+    recommended_jobs = jobs.get(dominant, []) if dominant else []
+
     firstname = request.session.get("firstname", "")
+
+    # Sauvegarde du résultat dans la session
+    # afin que le chatbot puisse y accéder
     request.session["riasec_dominant"] = dominant
     request.session["riasec_scores"] = scores
+    request.session["recommended_jobs"] = recommended_jobs
 
-    return render(request, "result.html", {
-        "scores": scores,
-        "dominant": dominant,
-        "descriptions": descriptions,
-        "jobs": jobs,
-        "firstname": firstname,
-        "theme": theme,
-    })
+    return render(
+        request,
+        "result.html",
+        {
+            "scores": scores,
+            "dominant": dominant,
+            "descriptions": descriptions,
+            "jobs": jobs,
+            "recommended_jobs": recommended_jobs,
+            "firstname": firstname,
+            "theme": theme,
+        }
+    )
     
 def reset_game(request):
     if request.session.session_key:
@@ -502,69 +555,269 @@ def chatbot_view(request):
             status=400
         )
 
+    api_key = os.getenv("OPENAI_API_KEY")
+
+    if not api_key:
+        return JsonResponse(
+            {
+                "error": "Le chatbot n'est pas encore configuré sur ce serveur."
+            },
+            status=503
+        )
+
+    # -------------------------
+    # Informations utilisateur
+    # -------------------------
+
     firstname = request.session.get("firstname", "élève")
     school_class = request.session.get("school_class", "")
     quest = request.session.get("quest", "")
+
     element = request.session.get("element")
     color = request.session.get("color")
     shape = request.session.get("shape")
 
+    dominant = request.session.get(
+        "riasec_dominant",
+        "non déterminé"
+    )
+
+    scores = request.session.get(
+        "riasec_scores",
+        {}
+    )
+
+    recommended_jobs = request.session.get(
+        "recommended_jobs",
+        []
+    )
+
+    # -------------------------
+    # Historique conversation
+    # -------------------------
+
+    chat_history = request.session.get(
+        "chat_history",
+        []
+    )
+
+    history_text = ""
+
+    # On garde seulement les derniers échanges
+    for exchange in chat_history[-6:]:
+        history_text += (
+            f"\nÉlève : {exchange['user']}"
+            f"\nGuide : {exchange['assistant']}\n"
+        )
+
+    # -------------------------
+    # Contexte
+    # -------------------------
+
     context = f"""
-    Prénom : {firstname}
-    Classe : {school_class}
-    Quête actuelle : {quest}
-    Élément choisi : {element or "aucun"}
-    Couleur choisie : {color or "aucune"}
-    Forme choisie : {shape or "aucune"}
-    """
+Prénom : {firstname}
+Classe : {school_class}
+
+Quête actuelle : {quest}
+
+Élément choisi :
+{element or "aucun"}
+
+Couleur choisie :
+{color or "aucune"}
+
+Forme choisie :
+{shape or "aucune"}
+
+Profil RIASEC dominant :
+{dominant}
+
+Scores RIASEC :
+{scores}
+
+Métiers recommandés actuellement :
+{recommended_jobs}
+"""
+
+    # -------------------------
+    # Instructions du chatbot
+    # -------------------------
 
     instructions = """
-    Tu es le guide d'orientation pédagogique du jeu FATE_95.
+Tu es le guide d'orientation de FATE_95.
 
-    Tu échanges principalement avec des collégiens et des lycéens.
+Tu accompagnes principalement des collégiens et des lycéens.
 
-    Tes missions :
-    - expliquer simplement les métiers ;
-    - aider l'élève à comprendre ses centres d'intérêt ;
-    - expliquer le modèle RIASEC avec des mots adaptés à son âge ;
-    - proposer des pistes de métiers et de formations ;
-    - poser occasionnellement une question courte pour aider l'élève
-      à réfléchir sur ses préférences.
+Ton rôle est d'aider l'élève à :
+- comprendre son profil RIASEC ;
+- découvrir des métiers ;
+- comprendre les différences entre plusieurs métiers ;
+- explorer des formations ;
+- réfléchir à ses centres d'intérêt.
 
-    Règles :
-    - sois bienveillant, clair et concis ;
-    - tutoie l'élève ;
-    - ne prétends jamais qu'un test détermine définitivement son avenir ;
-    - présente les métiers comme des pistes à explorer ;
-    - évite le jargon ;
-    - reste centré sur l'orientation scolaire et professionnelle ;
-    - si tu ne sais pas quelque chose, dis-le clairement.
-    """
+STYLE
+
+- tutoie toujours l'élève ;
+- utilise des phrases courtes ;
+- sois chaleureux, clair et pédagogique ;
+- ne sois pas infantilisant ;
+- utilise quelques emojis lorsque cela améliore la lecture ;
+- évite les gros blocs de texte ;
+- ne répète pas inutilement tout le profil à chaque réponse.
+
+PROFIL RIASEC
+
+Le résultat RIASEC est une indication, jamais une vérité absolue.
+
+Les profils sont :
+
+R — Réaliste :
+activités concrètes, techniques, manuelles.
+
+I — Investigateur :
+analyse, réflexion, recherche, résolution de problèmes.
+
+A — Artistique :
+créativité, imagination, expression.
+
+S — Social :
+aide, écoute, communication, accompagnement.
+
+E — Entreprenant :
+initiative, leadership, persuasion, prise de décision.
+
+C — Conventionnel :
+organisation, précision, classement, méthode.
+
+Un élève peut avoir plusieurs profils forts.
+
+MÉTIERS
+
+Si l'élève demande des informations sur les métiers proposés,
+utilise en priorité la liste présente dans le contexte.
+
+Pour présenter un métier, utilise si possible :
+
+💼 Nom du métier
+
+🧭 Ce qu'on fait :
+2 ou 3 missions concrètes.
+
+✨ Ce qui pourrait te plaire :
+pourquoi ce métier peut être intéressant pour ce profil.
+
+🧠 Qualités utiles :
+3 ou 4 qualités.
+
+🎓 Études possibles :
+quelques exemples de parcours.
+
+🔎 À savoir :
+une information intéressante ou pratique.
+
+COMPARAISON
+
+Si l'élève demande de comparer plusieurs métiers,
+compare brièvement :
+- les activités ;
+- le travail seul ou en équipe ;
+- la place des chiffres ;
+- la créativité ;
+- le contact humain ;
+- les études possibles.
+
+ORIENTATION
+
+Si l'élève demande :
+"Quel métier me correspond ?"
+
+Ne réponds jamais de manière définitive.
+
+Propose 2 ou 3 pistes et explique pourquoi.
+
+Tu peux terminer par UNE petite question permettant
+d'affiner ses préférences.
+
+Exemple :
+"Tu préfères travailler surtout avec des personnes,
+avec des chiffres ou avec des outils ?"
+
+RÈGLES
+
+- ne dis jamais "tu dois devenir..." ;
+- ne dis jamais "tu es fait pour..." ;
+- ne présente jamais le RIASEC comme un diagnostic ;
+- présente toujours les métiers comme des pistes ;
+- si une information manque, dis-le ;
+- reste centré sur l'orientation scolaire et professionnelle ;
+- évite les tableaux Markdown ;
+- évite les titres avec ### ;
+- préfère des réponses structurées avec des lignes courtes.
+"""
 
     try:
+        client = OpenAI(api_key=api_key)
+
         response = client.responses.create(
             model="gpt-5.6",
             instructions=instructions,
             input=f"""
-            Informations sur l'élève :
-            {context}
+Voici les informations disponibles sur l'élève :
 
-            Message de l'élève :
-            {message}
-            """
+{context}
+
+Historique récent de la conversation :
+
+{history_text or "Aucun échange précédent."}
+
+Nouvelle question de l'élève :
+
+{message}
+"""
         )
 
-        return JsonResponse({
-            "reply": response.output_text
+        reply = response.output_text.strip()
+
+        # -------------------------
+        # Enregistrer l'historique
+        # -------------------------
+
+        chat_history.append({
+            "user": message,
+            "assistant": reply
         })
 
-    except Exception as e:
-        print("Erreur chatbot :", e)
+        # On limite volontairement l'historique
+        request.session["chat_history"] = chat_history[-10:]
+
+        return JsonResponse({
+            "reply": reply
+        })
+
+    except RateLimitError as e:
+        print("\n========== QUOTA CHATBOT ==========")
+        print(str(e))
+        print("===================================\n")
 
         return JsonResponse(
             {
                 "error":
-                "Le guide est momentanément indisponible. Réessaie dans quelques instants."
+                    "Le guide FATE_95 est temporairement indisponible "
+                    "car le quota IA du serveur est épuisé."
+            },
+            status=429
+        )
+
+    except Exception as e:
+        print("\n========== ERREUR CHATBOT ==========")
+        print("Type :", type(e).__name__)
+        print("Message :", str(e))
+        print("====================================\n")
+
+        return JsonResponse(
+            {
+                "error":
+                    "Le guide rencontre actuellement un problème technique."
             },
             status=500
         )
